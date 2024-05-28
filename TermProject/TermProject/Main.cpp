@@ -7,8 +7,6 @@
 
 using namespace std;
 
-void CALLBACK MovePiece(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = L"Window Class Name";
 LPCTSTR lpszWindowName = L"Window Programming Lab";
