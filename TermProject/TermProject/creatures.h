@@ -8,7 +8,7 @@ protected:
 	int animationIndex;
 	POINT position;
 	CImage spriteBitmap;
-	MoveStatus animationStatus;
+	AnimationStatus animationStatus;
 
 public:
 	virtual int GetHp() = 0;
@@ -21,13 +21,15 @@ public:
 
 	virtual void Move(int x, int y) = 0;
 
-	virtual MoveStatus GetMoveStatus() = 0;
+	virtual AnimationStatus GetMoveStatus() = 0;
 
-	virtual void SetMoveStatus(MoveStatus status) = 0;
+	virtual void SetMoveStatus(AnimationStatus status) = 0;
 
 	virtual void SetSpriteBitmap(LPCTSTR fileName) = 0;
 
 	virtual void PlayAnimation(HDC hDC) = 0;
+
+	virtual void UpdateAnimationIndex() = 0;
 };
 
 class Player : Creature {
@@ -49,7 +51,7 @@ public:
 	}
 
 	~Player() {
-
+		DeleteObject(spriteBitmap);
 	}
 
 	virtual int GetHp() { return hp; }
@@ -62,9 +64,9 @@ public:
 
 	virtual void Move(int x, int y) { position = { position.x + x, position.y + y }; }
 
-	virtual MoveStatus GetMoveStatus() { return animationStatus; }
+	virtual AnimationStatus GetMoveStatus() { return animationStatus; }
 
-	virtual void SetMoveStatus(MoveStatus status) { animationStatus = status; }
+	virtual void SetMoveStatus(AnimationStatus status) { animationStatus = status; }
 
 	virtual void SetSpriteBitmap(LPCTSTR fileName) override { spriteBitmap.Load(fileName); }
 
@@ -72,6 +74,14 @@ public:
 		switch (animationStatus) {
 			case Idle: {
 				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 0, 25, 25);
+				break;
+			}
+		}
+	}
+
+	virtual void UpdateAnimationIndex() {
+		switch (animationStatus) {
+			case Idle: {
 				animationIndex = (animationIndex + 1) % 6;
 				break;
 			}

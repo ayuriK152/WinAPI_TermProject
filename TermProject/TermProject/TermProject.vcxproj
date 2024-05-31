@@ -133,6 +133,7 @@
     <ClInclude Include="datas.h" />
     <ClInclude Include="creatures.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="values.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="TermProject.rc" />

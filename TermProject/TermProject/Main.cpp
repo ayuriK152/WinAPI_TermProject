@@ -6,9 +6,12 @@
 #include <vector>
 #include <atlImage.h>
 #include "creatures.h"
+#include "values.h"
 
 using namespace std;
 
+void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void PlayAnimation(HDC hDC);
 
 HINSTANCE g_hInst;
@@ -51,7 +54,8 @@ HDC mDC;
 HBITMAP hBitmap;
 RECT rt;
 
-static Player player;
+static Player* player;
+static bool checkKeyInput[4];
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	srand((unsigned int)time(NULL));
@@ -65,10 +69,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_CREATE: {
 			GetClientRect(hWnd, &rt);
 
-			player = Player(rt.right / 2, rt.bottom / 2);
-			player.SetSpriteBitmap(L"The Pilot.bmp");
+			player = new Player(rt.right / 2, rt.bottom / 2);
+			player->SetSpriteBitmap(L"The Pilot.bmp");
 
-			SetTimer(hWnd, 1000, 75, NULL);
+			SetTimer(hWnd, 1000, 75, AnimationRefresh);
+			SetTimer(hWnd, 1001, 10, PositionRefresh);
 			break;
 		}
 
@@ -81,14 +86,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			EndPaint(hWnd, &ps);
 			break;
 		}
-		case WM_TIMER: {
-			InvalidateRect(hWnd, NULL, FALSE);
+
+		case WM_KEYDOWN: {
+			if (wParam == 'w' || wParam == 'W') {
+				checkKeyInput[0] = true;
+			}
+			else if (wParam == 's' || wParam == 'S') {
+				checkKeyInput[1] = true;
+			}
+			if (wParam == 'a' || wParam == 'A') {
+				checkKeyInput[2] = true;
+			}
+			else if (wParam == 'd' || wParam == 'D') {
+				checkKeyInput[3] = true;
+			}
 			break;
 		}
 
-		case WM_KEYDOWN: {
-			GetClientRect(hWnd, &rt);
-
+		case WM_KEYUP: {
+			if (wParam == 'w' || wParam == 'W') {
+				checkKeyInput[0] = false;
+			}
+			else if (wParam == 's' || wParam == 'S') {
+				checkKeyInput[1] = false;
+			}
+			if (wParam == 'a' || wParam == 'A') {
+				checkKeyInput[2] = false;
+			}
+			else if (wParam == 'd' || wParam == 'D') {
+				checkKeyInput[3] = false;
+			}
 			break;
 		}
 
@@ -110,7 +137,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case WM_CHAR: {
-
 			break;
 		}
 
@@ -120,6 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case WM_DESTROY: {
+			delete player;
 			PostQuitMessage(0);
 			break;
 		}
@@ -127,12 +154,32 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	player->UpdateAnimationIndex();
+}
+
+void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	if (checkKeyInput[0]) {
+		player->Move(0, -playerMoveSPeed);
+	}
+	if (checkKeyInput[1]) {
+		player->Move(0, playerMoveSPeed);
+	}
+	if (checkKeyInput[2]) {
+		player->Move(-playerMoveSPeed, 0);
+	}
+	if (checkKeyInput[3]) {
+		player->Move(playerMoveSPeed, 0);
+	}
+	InvalidateRect(hWnd, NULL, FALSE);
+}
+
 void PlayAnimation(HDC hDC) {
 	hBitmap = CreateCompatibleBitmap(hDC, rt.right, rt.bottom);
 	mDC = CreateCompatibleDC(hDC);
 	SelectObject(mDC, hBitmap);
 
-	player.PlayAnimation(mDC);
+	player->PlayAnimation(mDC);
 	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
 
 	DeleteObject(hBitmap);
