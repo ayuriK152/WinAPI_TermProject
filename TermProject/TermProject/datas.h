@@ -1,7 +1,7 @@
 #pragma once
 
-enum MoveStatus {
-	None,
+enum AnimationStatus {
+	Idle,
 	Up,
 	Down,
 	Left,

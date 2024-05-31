@@ -1,62 +1,80 @@
 #pragma once
+#include <atlImage.h>
 #include "datas.h"
 
 class Creature {
 protected:
 	int hp;
+	int animationIndex;
 	POINT position;
-	HBITMAP spriteBitmap;
-	MoveStatus moveStatus;
+	CImage spriteBitmap;
+	MoveStatus animationStatus;
 
 public:
-	int GetHp() {
-		return hp;
-	}
+	virtual int GetHp() = 0;
 
-	void SetHp(int value) {
-		hp = value;
-	}
+	virtual void SetHp(int value) = 0;
 
-	POINT GetPosition() {
-		return position;
-	}
+	virtual POINT GetPosition() = 0;
 
-	void SetPosition(int x, int y) {
-		position = { x, y };
-	}
+	virtual void SetPosition(int x, int y) = 0;
 
-	void Move(int x, int y) {
-		position = { position.x + x, position.y + y };
-	}
+	virtual void Move(int x, int y) = 0;
 
-	MoveStatus GetMoveStatus() {
-		return moveStatus;
-	}
+	virtual MoveStatus GetMoveStatus() = 0;
 
-	void SetMoveStatus(MoveStatus status) {
-		moveStatus = status;
-	}
+	virtual void SetMoveStatus(MoveStatus status) = 0;
 
-	void SetSpriteBitmap(HBITMAP spriteBitmap) {
-		this->spriteBitmap = spriteBitmap;
-	}
+	virtual void SetSpriteBitmap(LPCTSTR fileName) = 0;
+
+	virtual void PlayAnimation(HDC hDC) = 0;
 };
 
 class Player : Creature {
 public:
 	Player() {
 		hp = 6;
+		animationIndex = 0;
 		position = { 0, 0 };
-		moveStatus = None;
+		animationStatus = Idle;
+		spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
 	}
 
 	Player(int x, int y) {
 		hp = 6;
+		animationIndex = 0;
 		position = { x, y };
-		moveStatus = None;
+		animationStatus = Idle;
+		spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
 	}
 
 	~Player() {
 
+	}
+
+	virtual int GetHp() { return hp; }
+
+	virtual void SetHp(int value) { hp = value; }
+
+	virtual POINT GetPosition() { return position; }
+
+	virtual void SetPosition(int x, int y) { position = { x, y }; }
+
+	virtual void Move(int x, int y) { position = { position.x + x, position.y + y }; }
+
+	virtual MoveStatus GetMoveStatus() { return animationStatus; }
+
+	virtual void SetMoveStatus(MoveStatus status) { animationStatus = status; }
+
+	virtual void SetSpriteBitmap(LPCTSTR fileName) override { spriteBitmap.Load(fileName); }
+
+	virtual void PlayAnimation(HDC hDC) {
+		switch (animationStatus) {
+			case Idle: {
+				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 0, 25, 25);
+				animationIndex = (animationIndex + 1) % 6;
+				break;
+			}
+		}
 	}
 };

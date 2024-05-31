@@ -4,9 +4,12 @@
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <atlImage.h>
 #include "creatures.h"
 
 using namespace std;
+
+void PlayAnimation(HDC hDC);
 
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = L"Window Class Name";
@@ -44,27 +47,42 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 	return Message.wParam;
 }
 
+HDC mDC;
+HBITMAP hBitmap;
+RECT rt;
+
+static Player player;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	srand((unsigned int)time(NULL));
 	PAINTSTRUCT ps;
 	HDC hDC, mDC;
 	HBRUSH hBrush, oldBrush;
 	HPEN hPen, oldPen;
-	RECT rt;
 	static bool isDrag;
 
 	switch (uMsg) {
 		case WM_CREATE: {
+			GetClientRect(hWnd, &rt);
+
+			player = Player(rt.right / 2, rt.bottom / 2);
+			player.SetSpriteBitmap(L"The Pilot.bmp");
+
+			SetTimer(hWnd, 1000, 75, NULL);
 			break;
 		}
 
 		case WM_PAINT: {
-			GetClientRect(hWnd, &rt);
 			hDC = BeginPaint(hWnd, &ps);
-			mDC = CreateCompatibleDC(hDC);
+			GetClientRect(hWnd, &rt);
 
-			DeleteDC(mDC);
+			PlayAnimation(hDC);
+
 			EndPaint(hWnd, &ps);
+			break;
+		}
+		case WM_TIMER: {
+			InvalidateRect(hWnd, NULL, FALSE);
 			break;
 		}
 
@@ -107,4 +125,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 	}
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+void PlayAnimation(HDC hDC) {
+	hBitmap = CreateCompatibleBitmap(hDC, rt.right, rt.bottom);
+	mDC = CreateCompatibleDC(hDC);
+	SelectObject(mDC, hBitmap);
+
+	player.PlayAnimation(mDC);
+	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
+
+	DeleteObject(hBitmap);
+	DeleteObject(mDC);
 }
