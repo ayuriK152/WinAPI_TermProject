@@ -55,6 +55,7 @@ HBITMAP hBitmap;
 RECT rt;
 
 static Player* player;
+static POINT mousePoint;
 static bool checkKeyInput[4];
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -72,7 +73,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			player = new Player(rt.right / 2, rt.bottom / 2);
 			player->SetSpriteBitmap(L"The Pilot.bmp");
 
-			SetTimer(hWnd, 1000, 75, AnimationRefresh);
+			SetTimer(hWnd, 1000, 67, AnimationRefresh);
 			SetTimer(hWnd, 1001, 10, PositionRefresh);
 			break;
 		}
@@ -132,7 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case WM_MOUSEMOVE: {
-
+			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
 			break;
 		}
 
@@ -155,6 +156,25 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	AnimationStatus pastStatus = player->GetMoveStatus();
+	if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3]) {
+		player->SetMoveStatus(Idle);
+	}
+	else if (mousePoint.x < player->GetPosition().x && abs(mousePoint.x - player->GetPosition().x) > abs(mousePoint.y - player->GetPosition().y)) {
+		player->SetMoveStatus(Left);
+	}
+	else if (mousePoint.x > player->GetPosition().x && abs(mousePoint.x - player->GetPosition().x) > abs(mousePoint.y - player->GetPosition().y)) {
+		player->SetMoveStatus(Right);
+	}
+	else if (mousePoint.y < player->GetPosition().y && abs(mousePoint.y - player->GetPosition().y) > abs(mousePoint.x - player->GetPosition().x)) {
+		player->SetMoveStatus(Up);
+	}
+	else if (mousePoint.y > player->GetPosition().y && abs(mousePoint.y - player->GetPosition().y) > abs(mousePoint.x - player->GetPosition().x)) {
+		player->SetMoveStatus(Down);
+	}
+	if (pastStatus != player->GetMoveStatus()) {
+		player->SetAnimationIndex(0);
+	}
 	player->UpdateAnimationIndex();
 }
 

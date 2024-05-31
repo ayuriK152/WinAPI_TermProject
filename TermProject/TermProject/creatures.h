@@ -29,6 +29,8 @@ public:
 
 	virtual void PlayAnimation(HDC hDC) = 0;
 
+	virtual void SetAnimationIndex(int value) = 0;
+
 	virtual void UpdateAnimationIndex() = 0;
 };
 
@@ -76,12 +78,32 @@ public:
 				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 0, 25, 25);
 				break;
 			}
+			case Up: {
+				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 150, 25, 25);
+				break;
+			}
+			case Down: {
+				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 100, 25, 25);
+				break;
+			}
+			case Left: {
+				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 125, 25, 25);
+				break;
+			}
+			case Right: {
+				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 125, 25, 25);
+				break;
+			}
 		}
+	}
+
+	virtual void SetAnimationIndex(int value) {
+		animationIndex = value;
 	}
 
 	virtual void UpdateAnimationIndex() {
 		switch (animationStatus) {
-			case Idle: {
+			default: {
 				animationIndex = (animationIndex + 1) % 6;
 				break;
 			}
