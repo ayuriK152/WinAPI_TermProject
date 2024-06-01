@@ -1,7 +1,10 @@
 #pragma once
 
 enum AnimationStatus {
-	Idle,
+	IdleUp,
+	IdleDown,
+	IdleLeft,
+	IdleRight,
 	Up,
 	Down,
 	Left,

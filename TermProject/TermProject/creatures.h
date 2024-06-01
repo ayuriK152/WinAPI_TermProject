@@ -1,6 +1,7 @@
 #pragma once
 #include <atlImage.h>
 #include "datas.h"
+#include "values.h"
 
 class Creature {
 protected:
@@ -36,77 +37,31 @@ public:
 
 class Player : Creature {
 public:
-	Player() {
-		hp = 6;
-		animationIndex = 0;
-		position = { 0, 0 };
-		animationStatus = Idle;
-		spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
-	}
+	Player();
 
-	Player(int x, int y) {
-		hp = 6;
-		animationIndex = 0;
-		position = { x, y };
-		animationStatus = Idle;
-		spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
-	}
+	Player(int x, int y);
 
-	~Player() {
-		DeleteObject(spriteBitmap);
-	}
+	~Player();
 
-	virtual int GetHp() { return hp; }
+	virtual int GetHp();
 
-	virtual void SetHp(int value) { hp = value; }
+	virtual void SetHp(int value);
 
-	virtual POINT GetPosition() { return position; }
+	virtual POINT GetPosition();
 
-	virtual void SetPosition(int x, int y) { position = { x, y }; }
+	virtual void SetPosition(int x, int y);
 
-	virtual void Move(int x, int y) { position = { position.x + x, position.y + y }; }
+	virtual void Move(int x, int y);
 
-	virtual AnimationStatus GetMoveStatus() { return animationStatus; }
+	virtual AnimationStatus GetMoveStatus();
 
-	virtual void SetMoveStatus(AnimationStatus status) { animationStatus = status; }
+	virtual void SetMoveStatus(AnimationStatus status);
 
-	virtual void SetSpriteBitmap(LPCTSTR fileName) override { spriteBitmap.Load(fileName); }
+	virtual void SetSpriteBitmap(LPCTSTR fileName);
 
-	virtual void PlayAnimation(HDC hDC) {
-		switch (animationStatus) {
-			case Idle: {
-				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 0, 25, 25);
-				break;
-			}
-			case Up: {
-				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 150, 25, 25);
-				break;
-			}
-			case Down: {
-				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 100, 25, 25);
-				break;
-			}
-			case Left: {
-				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 125, 25, 25);
-				break;
-			}
-			case Right: {
-				spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, 25 * animationIndex, 125, 25, 25);
-				break;
-			}
-		}
-	}
+	virtual void PlayAnimation(HDC hDC);
 
-	virtual void SetAnimationIndex(int value) {
-		animationIndex = value;
-	}
+	virtual void SetAnimationIndex(int value);
 
-	virtual void UpdateAnimationIndex() {
-		switch (animationStatus) {
-			default: {
-				animationIndex = (animationIndex + 1) % 6;
-				break;
-			}
-		}
-	}
+	virtual void UpdateAnimationIndex();
 };

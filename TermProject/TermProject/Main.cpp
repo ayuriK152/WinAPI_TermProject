@@ -158,7 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	AnimationStatus pastStatus = player->GetMoveStatus();
 	if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3]) {
-		player->SetMoveStatus(Idle);
+		player->SetMoveStatus(IdleDown);
 	}
 	else if (mousePoint.x < player->GetPosition().x && abs(mousePoint.x - player->GetPosition().x) > abs(mousePoint.y - player->GetPosition().y)) {
 		player->SetMoveStatus(Left);
@@ -180,16 +180,16 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	if (checkKeyInput[0]) {
-		player->Move(0, -playerMoveSPeed);
+		player->Move(0, -playerMoveSpeed);
 	}
 	if (checkKeyInput[1]) {
-		player->Move(0, playerMoveSPeed);
+		player->Move(0, playerMoveSpeed);
 	}
 	if (checkKeyInput[2]) {
-		player->Move(-playerMoveSPeed, 0);
+		player->Move(-playerMoveSpeed, 0);
 	}
 	if (checkKeyInput[3]) {
-		player->Move(playerMoveSPeed, 0);
+		player->Move(playerMoveSpeed, 0);
 	}
 	InvalidateRect(hWnd, NULL, FALSE);
 }
