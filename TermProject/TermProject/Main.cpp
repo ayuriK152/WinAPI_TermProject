@@ -13,6 +13,8 @@ using namespace std;
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 void PlayAnimation(HDC hDC);
+double DistanceByPoint(POINT p1, POINT p2);
+double TanByPoint(POINT p1, POINT p2);
 
 HINSTANCE g_hInst;
 LPCTSTR lpszClass = L"Window Class Name";
@@ -39,7 +41,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 	WndClass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	RegisterClassEx(&WndClass);
 
-	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_OVERLAPPEDWINDOW, 0, 0, 800, 600, NULL, (HMENU)NULL, hInstance, NULL);
+	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_OVERLAPPEDWINDOW, 0, 0, 1600, 900, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
@@ -73,7 +75,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			player = new Player(rt.right / 2, rt.bottom / 2);
 			player->SetSpriteBitmap(L"The Pilot.bmp");
 
-			SetTimer(hWnd, 1000, 67, AnimationRefresh);
+			SetTimer(hWnd, 1000, 150, AnimationRefresh);
 			SetTimer(hWnd, 1001, 10, PositionRefresh);
 			break;
 		}
@@ -157,9 +159,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	AnimationStatus pastStatus = player->GetMoveStatus();
+	double tanValue = TanByPoint(player->GetPosition(), mousePoint);
 	if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3]) {
 		player->SetMoveStatus(IdleDown);
 	}
+	/*
 	else if (mousePoint.x < player->GetPosition().x && abs(mousePoint.x - player->GetPosition().x) > abs(mousePoint.y - player->GetPosition().y)) {
 		player->SetMoveStatus(Left);
 	}
@@ -170,6 +174,25 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 		player->SetMoveStatus(Up);
 	}
 	else if (mousePoint.y > player->GetPosition().y && abs(mousePoint.y - player->GetPosition().y) > abs(mousePoint.x - player->GetPosition().x)) {
+		player->SetMoveStatus(Down);
+	}
+	*/
+	else if (mousePoint.x < player->GetPosition().x && (tanValue >= tan22_5 && tanValue <= tan67_5)) {
+		player->SetMoveStatus(UpLeft);
+	}
+	else if (mousePoint.x > player->GetPosition().x && (tanValue <= -tan22_5 && tanValue >= -tan67_5)) {
+		player->SetMoveStatus(UpRight);
+	}
+	else if (mousePoint.x < player->GetPosition().x && ((tanValue <= tan22_5 && tanValue >= 0) || tanValue >= -tan67_5 && tanValue <= 0)) {
+		player->SetMoveStatus(Left);
+	}
+	else if (mousePoint.x > player->GetPosition().x && ((tanValue >= -tan22_5 && tanValue <= 0) || tanValue <= tan67_5 && tanValue >= 0)) {
+		player->SetMoveStatus(Right);
+	}
+	else if (mousePoint.y < player->GetPosition().y) {
+		player->SetMoveStatus(Up);
+	}
+	else if (mousePoint.y > player->GetPosition().y) {
 		player->SetMoveStatus(Down);
 	}
 	if (pastStatus != player->GetMoveStatus()) {
@@ -204,4 +227,12 @@ void PlayAnimation(HDC hDC) {
 
 	DeleteObject(hBitmap);
 	DeleteObject(mDC);
+}
+
+double DistanceByPoint(POINT p1, POINT p2) {
+	return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+}
+
+double TanByPoint(POINT p1, POINT p2) {
+	return (double)(p2.y - p1.y) / (p2.x - p1.x);
 }

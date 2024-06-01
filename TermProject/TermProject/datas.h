@@ -5,8 +5,12 @@ enum AnimationStatus {
 	IdleDown,
 	IdleLeft,
 	IdleRight,
+	IdleUpLeft,
+	IdleUpRight,
 	Up,
 	Down,
 	Left,
-	Right
+	Right,
+	UpLeft,
+	UpRight
 };

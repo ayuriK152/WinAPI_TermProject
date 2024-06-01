@@ -1,5 +1,4 @@
 #pragma once
-#include <atlImage.h>
 #include "datas.h"
 #include "values.h"
 
