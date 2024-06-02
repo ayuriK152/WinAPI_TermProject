@@ -75,8 +75,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			player = new Player(rt.right / 2, rt.bottom / 2);
 			player->SetSpriteBitmap(L"The Pilot.bmp");
 
-			SetTimer(hWnd, 1000, 150, AnimationRefresh);
-			SetTimer(hWnd, 1001, 10, PositionRefresh);
+			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
+			SetTimer(hWnd, 1001, POSITION_REFRESH_DURATION, PositionRefresh);
 			break;
 		}
 
@@ -160,40 +160,41 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	AnimationStatus pastStatus = player->GetMoveStatus();
 	double tanValue = TanByPoint(player->GetPosition(), mousePoint);
-	if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3]) {
-		player->SetMoveStatus(IdleDown);
+	if (mousePoint.x < player->GetPosition().x && (tanValue >= TAN_22_5 && tanValue <= TAN_67_5)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			player->SetMoveStatus(IdleUpLeft);
+		else
+			player->SetMoveStatus(UpLeft);
 	}
-	/*
-	else if (mousePoint.x < player->GetPosition().x && abs(mousePoint.x - player->GetPosition().x) > abs(mousePoint.y - player->GetPosition().y)) {
-		player->SetMoveStatus(Left);
-	}
-	else if (mousePoint.x > player->GetPosition().x && abs(mousePoint.x - player->GetPosition().x) > abs(mousePoint.y - player->GetPosition().y)) {
-		player->SetMoveStatus(Right);
-	}
-	else if (mousePoint.y < player->GetPosition().y && abs(mousePoint.y - player->GetPosition().y) > abs(mousePoint.x - player->GetPosition().x)) {
-		player->SetMoveStatus(Up);
-	}
-	else if (mousePoint.y > player->GetPosition().y && abs(mousePoint.y - player->GetPosition().y) > abs(mousePoint.x - player->GetPosition().x)) {
-		player->SetMoveStatus(Down);
-	}
-	*/
-	else if (mousePoint.x < player->GetPosition().x && (tanValue >= tan22_5 && tanValue <= tan67_5)) {
-		player->SetMoveStatus(UpLeft);
-	}
-	else if (mousePoint.x > player->GetPosition().x && (tanValue <= -tan22_5 && tanValue >= -tan67_5)) {
+	else if (mousePoint.x > player->GetPosition().x && (tanValue <= -TAN_22_5 && tanValue >= -TAN_67_5)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			player->SetMoveStatus(IdleUpRight);
+		else
 		player->SetMoveStatus(UpRight);
 	}
-	else if (mousePoint.x < player->GetPosition().x && ((tanValue <= tan22_5 && tanValue >= 0) || tanValue >= -tan67_5 && tanValue <= 0)) {
-		player->SetMoveStatus(Left);
+	else if (mousePoint.x < player->GetPosition().x && ((tanValue <= TAN_22_5 && tanValue >= 0) || tanValue >= -TAN_67_5 && tanValue <= 0)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			player->SetMoveStatus(IdleLeft);
+		else
+			player->SetMoveStatus(Left);
 	}
-	else if (mousePoint.x > player->GetPosition().x && ((tanValue >= -tan22_5 && tanValue <= 0) || tanValue <= tan67_5 && tanValue >= 0)) {
-		player->SetMoveStatus(Right);
+	else if (mousePoint.x > player->GetPosition().x && ((tanValue >= -TAN_22_5 && tanValue <= 0) || tanValue <= TAN_67_5 && tanValue >= 0)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			player->SetMoveStatus(IdleRight);
+		else
+			player->SetMoveStatus(Right);
 	}
 	else if (mousePoint.y < player->GetPosition().y) {
-		player->SetMoveStatus(Up);
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			player->SetMoveStatus(IdleUp);
+		else
+			player->SetMoveStatus(Up);
 	}
 	else if (mousePoint.y > player->GetPosition().y) {
-		player->SetMoveStatus(Down);
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			player->SetMoveStatus(IdleDown);
+		else
+			player->SetMoveStatus(Down);
 	}
 	if (pastStatus != player->GetMoveStatus()) {
 		player->SetAnimationIndex(0);
@@ -203,16 +204,16 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	if (checkKeyInput[0]) {
-		player->Move(0, -playerMoveSpeed);
+		player->Move(0, -PLAYER_MOVE_SPEED);
 	}
 	if (checkKeyInput[1]) {
-		player->Move(0, playerMoveSpeed);
+		player->Move(0, PLAYER_MOVE_SPEED);
 	}
 	if (checkKeyInput[2]) {
-		player->Move(-playerMoveSpeed, 0);
+		player->Move(-PLAYER_MOVE_SPEED, 0);
 	}
 	if (checkKeyInput[3]) {
-		player->Move(playerMoveSpeed, 0);
+		player->Move(PLAYER_MOVE_SPEED, 0);
 	}
 	InvalidateRect(hWnd, NULL, FALSE);
 }

@@ -1,14 +1,21 @@
 #pragma once
 
-const static int playerMoveSpeed = 5;
+static const int PLAYER_MOVE_SPEED = 5;
+static const int ANIMATION_REFRESH_DURATION = 100;
+static const int POSITION_REFRESH_DURATION = 10;
 
-const static POINT animationOffsetPlayerIdle = { 0, 0 };
-const static POINT animationOffsetPlayerUp = { 0, 175 };
-const static POINT animationOffsetPlayerDown = { 0, 125 };
-const static POINT animationOffsetPlayerLeft = { 0, 150 };
-const static POINT animationOffsetPlayerRight = { 0, 150 };
-const static POINT animationOffsetPlayerUpLeft = { 0, 200 };
-const static POINT animationOffsetPlayerUpRight = { 0, 200 };
+static const POINT ANIMATION_OFFSET_PLAYER_IDLE_UP = { 0, 50 };
+static const POINT ANIMATION_OFFSET_PLAYER_IDLE_DOWN = { 0, 0 };
+static const POINT ANIMATION_OFFSET_PLAYER_IDLE_LEFT = { 0, 25 };
+static const POINT ANIMATION_OFFSET_PLAYER_IDLE_RIGHT = { 0, 25 };
+static const POINT ANIMATION_OFFSET_PLAYER_IDLE_UPLEFT = { 0, 75 };
+static const POINT ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT = { 0, 75 };
+static const POINT ANIMATION_OFFSET_PLAYER_UP = { 0, 175 };
+static const POINT ANIMATION_OFFSET_PLAYER_DOWN = { 0, 125 };
+static const POINT ANIMATION_OFFSET_PLAYER_LEFT = { 0, 150 };
+static const POINT ANIMATION_OFFSET_PLAYER_RIGHT = { 0, 150 };
+static const POINT ANIMATION_OFFSET_PLAYER_UPLEFT = { 0, 200 };
+static const POINT ANIMATION_OFFSET_PLAYER_UPRIGHT = { 0, 200 };
 
-const static double tan22_5 = 0.41421356;
-const static double tan67_5 = 2.41421356;
+static const double TAN_22_5 = 0.41421356;
+static const double TAN_67_5 = 2.41421356;
