@@ -66,7 +66,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	HDC hDC, mDC;
 	HBRUSH hBrush, oldBrush;
 	HPEN hPen, oldPen;
-	static bool isDrag;
 
 	switch (uMsg) {
 		case WM_CREATE: {
@@ -123,14 +122,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case WM_LBUTTONDOWN: {
-			isDrag = true;
 
 			break;
 		}
 
 		case WM_LBUTTONUP: {
-			isDrag = false;
 
+			break;
+		}
+
+		case WM_RBUTTONDOWN: {
+			if (player->IsRolling())
+				break;
+			player->Roll(checkKeyInput);
 			break;
 		}
 
@@ -158,43 +162,49 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	if (player->IsRolling()) {
+		player->UpdateAnimationIndex();
+		return;
+	}
+
 	AnimationStatus pastStatus = player->GetMoveStatus();
 	double tanValue = TanByPoint(player->GetPosition(), mousePoint);
+
 	if (mousePoint.x < player->GetPosition().x && (tanValue >= TAN_22_5 && tanValue <= TAN_67_5)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleUpLeft);
 		else
-			player->SetMoveStatus(UpLeft);
+			player->SetMoveStatus(MoveUpLeft);
 	}
 	else if (mousePoint.x > player->GetPosition().x && (tanValue <= -TAN_22_5 && tanValue >= -TAN_67_5)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleUpRight);
 		else
-		player->SetMoveStatus(UpRight);
+		player->SetMoveStatus(MoveUpRight);
 	}
 	else if (mousePoint.x < player->GetPosition().x && ((tanValue <= TAN_22_5 && tanValue >= 0) || tanValue >= -TAN_67_5 && tanValue <= 0)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleLeft);
 		else
-			player->SetMoveStatus(Left);
+			player->SetMoveStatus(MoveLeft);
 	}
 	else if (mousePoint.x > player->GetPosition().x && ((tanValue >= -TAN_22_5 && tanValue <= 0) || tanValue <= TAN_67_5 && tanValue >= 0)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleRight);
 		else
-			player->SetMoveStatus(Right);
+			player->SetMoveStatus(MoveRight);
 	}
 	else if (mousePoint.y < player->GetPosition().y) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleUp);
 		else
-			player->SetMoveStatus(Up);
+			player->SetMoveStatus(MoveUp);
 	}
 	else if (mousePoint.y > player->GetPosition().y) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleDown);
 		else
-			player->SetMoveStatus(Down);
+			player->SetMoveStatus(MoveDown);
 	}
 	if (pastStatus != player->GetMoveStatus()) {
 		player->SetAnimationIndex(0);
@@ -203,17 +213,93 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 }
 
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
-	if (checkKeyInput[0]) {
-		player->Move(0, -PLAYER_MOVE_SPEED);
+	if (player->IsRolling()) {
+		int moveSpeed = 0;
+		if (player->GetAnimationIndex() > 6)
+			moveSpeed = player->IsMoveDiagonal() ? PLAYER_ROLL_END_SPEED_DIAGONAL : PLAYER_ROLL_END_SPEED;
+		else if (player->GetAnimationIndex() > 4)
+			moveSpeed = player->IsMoveDiagonal() ? PLAYER_ROLL_ING_SPEED_DIAGONAL : PLAYER_ROLL_ING_SPEED;
+		else
+			moveSpeed = player->IsMoveDiagonal() ? PLAYER_ROLL_START_SPEED_DIAGONAL : PLAYER_ROLL_START_SPEED;
+
+		switch (player->GetMoveStatus()) {
+			case RollUp: {
+				player->Move(0, -moveSpeed);
+				break;
+			}
+			case RollDown: {
+				player->Move(0, moveSpeed);
+				break;
+			}
+			case RollLeft: {
+				player->Move(-moveSpeed, 0);
+				break;
+			}
+			case RollRight: {
+				player->Move(moveSpeed, 0);
+				break;
+			}
+			case RollUpLeft: {
+				player->Move(-moveSpeed, -moveSpeed);
+				break;
+			}
+			case RollUpRight: {
+				player->Move(moveSpeed, -moveSpeed);
+				break;
+			}
+			case RollDownLeft: {
+				player->Move(-moveSpeed, moveSpeed);
+				break;
+			}
+			case RollDownRight: {
+				player->Move(moveSpeed, moveSpeed);
+				break;
+			}
+		}
+		InvalidateRect(hWnd, NULL, FALSE);
 	}
-	if (checkKeyInput[1]) {
-		player->Move(0, PLAYER_MOVE_SPEED);
-	}
-	if (checkKeyInput[2]) {
-		player->Move(-PLAYER_MOVE_SPEED, 0);
-	}
-	if (checkKeyInput[3]) {
-		player->Move(PLAYER_MOVE_SPEED, 0);
+
+	else {
+		if (checkKeyInput[0]) {
+			if (checkKeyInput[2] || checkKeyInput[3]) {
+				player->SetMoveDiagonalCheck(true);
+				player->Move(0, -PLAYER_MOVE_SPEED_DIAGONAL);
+			}
+			else {
+				player->SetMoveDiagonalCheck(false);
+				player->Move(0, -PLAYER_MOVE_SPEED);
+			}
+		}
+		if (checkKeyInput[1]) {
+			if (checkKeyInput[2] || checkKeyInput[3]) {
+				player->SetMoveDiagonalCheck(true);
+				player->Move(0, PLAYER_MOVE_SPEED_DIAGONAL);
+			}
+			else {
+				player->SetMoveDiagonalCheck(false);
+				player->Move(0, PLAYER_MOVE_SPEED);
+			}
+		}
+		if (checkKeyInput[2]) {
+			if (checkKeyInput[0] || checkKeyInput[1]) {
+				player->SetMoveDiagonalCheck(true);
+				player->Move(-PLAYER_MOVE_SPEED_DIAGONAL, 0);
+			}
+			else {
+				player->SetMoveDiagonalCheck(false);
+				player->Move(-PLAYER_MOVE_SPEED, 0);
+			}
+		}
+		if (checkKeyInput[3]) {
+			if (checkKeyInput[0] || checkKeyInput[1]) {
+				player->SetMoveDiagonalCheck(true);
+				player->Move(PLAYER_MOVE_SPEED_DIAGONAL, 0);
+			}
+			else {
+				player->SetMoveDiagonalCheck(false);
+				player->Move(PLAYER_MOVE_SPEED, 0);
+			}
+		}
 	}
 	InvalidateRect(hWnd, NULL, FALSE);
 }

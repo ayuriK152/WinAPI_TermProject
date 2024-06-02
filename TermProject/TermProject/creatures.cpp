@@ -5,6 +5,7 @@
 Player::Player() {
 	hp = 6;
 	animationIndex = 0;
+	isMoveDiagonal = false;
 	position = { 0, 0 };
 	animationStatus = IdleDown;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
@@ -13,6 +14,7 @@ Player::Player() {
 Player::Player(int x, int y) {
 	hp = 6;
 	animationIndex = 0;
+	isMoveDiagonal = false;
 	position = { x, y };
 	animationStatus = IdleDown;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
@@ -82,49 +84,112 @@ void Player::PlayAnimation(HDC hDC) {
 			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.y, 25, 25);
 			break;
 		}
-		case Up: {
-			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_UP.y, 25, 25);
+		case MoveUp: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_MOVE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UP.y, 25, 25);
 			break;
 		}
-		case Down: {
-			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_DOWN.y, 25, 25);
+		case MoveDown: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.y, 25, 25);
 			break;
 		}
-		case Left: {
+		case MoveLeft: {
 			CImage temp;
 			temp.Create(25, 25, 32, 0);
 			temp.SetTransparentColor(RGB(144, 187, 187));
 			for (int y = 0; y < 25; y++) {
 				for (int x = 0; x < 25; x++) {
-					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_LEFT.y + y));
+					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_MOVE_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_MOVE_LEFT.y + y));
 				}
 			}
 			temp.Draw(hDC, position.x, position.y, 50, 50, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
-		case Right: {
-			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_RIGHT.y, 25, 25);
+		case MoveRight: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.y, 25, 25);
 			break;
 		}
-		case UpLeft: {
+		case MoveUpLeft: {
 			CImage temp;
 			temp.Create(25, 25, 32, 0);
 			temp.SetTransparentColor(RGB(144, 187, 187));
 			for (int y = 0; y < 25; y++) {
 				for (int x = 0; x < 25; x++) {
-					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_UPLEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_UPLEFT.y + y));
+					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_MOVE_UPLEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_MOVE_UPLEFT.y + y));
 				}
 			}
 			temp.Draw(hDC, position.x, position.y, 50, 50, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
-		case UpRight: {
-			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_UPRIGHT.y, 25, 25);
+		case MoveUpRight: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.y, 25, 25);
+			break;
+		}
+		case RollUp: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_ROLL_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_UP.y, 25, 25);
+			break;
+		}
+		case RollDown: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_ROLL_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_DOWN.y, 25, 25);
+			break;
+		}
+		case RollLeft: {
+			CImage temp;
+			temp.Create(25, 25, 32, 0);
+			temp.SetTransparentColor(RGB(144, 187, 187));
+			for (int y = 0; y < 25; y++) {
+				for (int x = 0; x < 25; x++) {
+					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_ROLL_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_ROLL_LEFT.y + y));
+				}
+			}
+			temp.Draw(hDC, position.x, position.y, 50, 50, 0, 0, 25, 25);
+			DeleteObject(temp);
+			break;
+		}
+		case RollRight: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
+			break;
+		}
+		case RollUpLeft: {
+			CImage temp;
+			temp.Create(25, 25, 32, 0);
+			temp.SetTransparentColor(RGB(144, 187, 187));
+			for (int y = 0; y < 25; y++) {
+				for (int x = 0; x < 25; x++) {
+					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_ROLL_UPLEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_ROLL_UPLEFT.y + y));
+				}
+			}
+			temp.Draw(hDC, position.x, position.y, 50, 50, 0, 0, 25, 25);
+			DeleteObject(temp);
+			break;
+		}
+		case RollUpRight: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT.y, 25, 25);
+			break;
+		}
+		case RollDownLeft: {
+			CImage temp;
+			temp.Create(25, 25, 32, 0);
+			temp.SetTransparentColor(RGB(144, 187, 187));
+			for (int y = 0; y < 25; y++) {
+				for (int x = 0; x < 25; x++) {
+					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_ROLL_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_ROLL_LEFT.y + y));
+				}
+			}
+			temp.Draw(hDC, position.x, position.y, 50, 50, 0, 0, 25, 25);
+			DeleteObject(temp);
+			break;
+		}
+		case RollDownRight: {
+			spriteBitmap.Draw(hDC, position.x, position.y, 50, 50, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
 			break;
 		}
 	}
+}
+
+int Player::GetAnimationIndex() {
+	return animationIndex;
 }
 
 void Player::SetAnimationIndex(int value) {
@@ -149,9 +214,115 @@ void Player::UpdateAnimationIndex() {
 			animationIndex = (animationIndex + 1) % 4;
 			break;
 		}
+		case RollUp: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollDown: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollLeft: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollRight: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollUpLeft: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollUpRight: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollDownLeft: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
+		case RollDownRight: {
+			if (animationIndex >= 8) {
+				animationIndex = 0;
+				isRoll = false;
+			}
+			animationIndex = animationIndex + 1;
+			break;
+		}
 		default: {
 			animationIndex = (animationIndex + 1) % 6;
 			break;
 		}
 	}
+}
+
+bool Player::IsMoveDiagonal() {
+	return isMoveDiagonal;
+}
+
+void Player::SetMoveDiagonalCheck(bool value) {
+	isMoveDiagonal = value;
+}
+
+void Player::Roll(bool checkKeyInput[]) {
+	if (checkKeyInput[0]) {
+		if (checkKeyInput[2])
+			animationStatus = RollUpLeft;
+		else if (checkKeyInput[3])
+			animationStatus = RollUpRight;
+		else
+			animationStatus = RollUp;
+	}
+	else if (checkKeyInput[1]) {
+		if (checkKeyInput[2])
+			animationStatus = RollDownLeft;
+		else if (checkKeyInput[3])
+			animationStatus = RollDownRight;
+		else
+			animationStatus = RollDown;
+	}
+	else if (checkKeyInput[2]) {
+		animationStatus = RollLeft;
+	}
+	else if (checkKeyInput[3]) {
+		animationStatus = RollRight;
+	}
+	else {
+		return;
+	}
+	SetAnimationIndex(0);
+	isRoll = true;
+}
+
+bool Player::IsRolling() {
+	return isRoll;
 }

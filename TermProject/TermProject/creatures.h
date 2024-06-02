@@ -6,6 +6,7 @@ class Creature {
 protected:
 	int hp;
 	int animationIndex;
+	bool isMoveDiagonal;
 	POINT position;
 	CImage spriteBitmap;
 	AnimationStatus animationStatus;
@@ -29,12 +30,21 @@ public:
 
 	virtual void PlayAnimation(HDC hDC) = 0;
 
+	virtual int GetAnimationIndex() = 0;
+
 	virtual void SetAnimationIndex(int value) = 0;
 
 	virtual void UpdateAnimationIndex() = 0;
+
+	virtual bool IsMoveDiagonal() = 0;
+
+	virtual void SetMoveDiagonalCheck(bool value) = 0;
 };
 
 class Player : Creature {
+private:
+	bool isRoll;
+
 public:
 	Player();
 
@@ -60,7 +70,17 @@ public:
 
 	virtual void PlayAnimation(HDC hDC);
 
+	virtual int GetAnimationIndex();
+
 	virtual void SetAnimationIndex(int value);
 
 	virtual void UpdateAnimationIndex();
+
+	virtual bool IsMoveDiagonal();
+
+	virtual void SetMoveDiagonalCheck(bool value);
+
+	void Roll(bool checkKeyInput[]);
+
+	bool IsRolling();
 };
