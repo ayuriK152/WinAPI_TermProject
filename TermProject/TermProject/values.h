@@ -1,6 +1,7 @@
 #pragma once
 
-static const int ANIMATION_REFRESH_DURATION = 67;
+static const int ANIMATION_REFRESH_DURATION = 100;
+static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
 static const int POSITION_REFRESH_DURATION = 10;
 
 static const int PLAYER_MOVE_SPEED = 5;

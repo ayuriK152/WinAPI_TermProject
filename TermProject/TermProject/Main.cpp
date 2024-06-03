@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <atlImage.h>
+#include "resource.h"
 #include "creatures.h"
 #include "values.h"
 
@@ -34,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 	WndClass.cbWndExtra = 0;
 	WndClass.hInstance = hInstance;
 	WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	WndClass.hCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR1));
 	WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	WndClass.lpszMenuName = NULL;
 	WndClass.lpszClassName = lpszClass;
@@ -135,6 +136,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			if (player->IsRolling())
 				break;
 			player->Roll(checkKeyInput);
+			KillTimer(hWnd, 1000);
+			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION_PLAYER_ROLL, AnimationRefresh);
 			break;
 		}
 
@@ -164,6 +167,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	if (player->IsRolling()) {
 		player->UpdateAnimationIndex();
+
+		if (!player->IsRolling()) {
+			KillTimer(hWnd, 1000);
+			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
+		}
 		return;
 	}
 

@@ -216,6 +216,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollUp: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveUp;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -224,6 +225,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollDown: {
 			if (animationIndex >= 8) {
+			animationStatus = MoveDown;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -232,6 +234,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollLeft: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveLeft;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -240,6 +243,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollRight: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveRight;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -248,6 +252,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollUpLeft: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveUpLeft;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -256,6 +261,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollUpRight: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveUpRight;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -264,6 +270,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollDownLeft: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveLeft;
 				animationIndex = 0;
 				isRoll = false;
 			}
@@ -272,6 +279,7 @@ void Player::UpdateAnimationIndex() {
 		}
 		case RollDownRight: {
 			if (animationIndex >= 8) {
+				animationStatus = MoveRight;
 				animationIndex = 0;
 				isRoll = false;
 			}
