@@ -43,6 +43,7 @@ public:
 
 class Player : Creature {
 private:
+	POINT cameraRelativePosition;
 	bool isRoll;
 
 public:
@@ -79,6 +80,10 @@ public:
 	virtual bool IsMoveDiagonal();
 
 	virtual void SetMoveDiagonalCheck(bool value);
+
+	POINT GetCameraRelativePosition();
+
+	void SetCameraRelativePosition(POINT position);
 
 	void Roll(bool checkKeyInput[]);
 

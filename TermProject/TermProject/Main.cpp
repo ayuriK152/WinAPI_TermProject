@@ -35,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 	WndClass.cbWndExtra = 0;
 	WndClass.hInstance = hInstance;
 	WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
-	WndClass.hCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR1));
+	WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
 	WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	WndClass.lpszMenuName = NULL;
 	WndClass.lpszClassName = lpszClass;
@@ -43,6 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 	RegisterClassEx(&WndClass);
 
 	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_OVERLAPPEDWINDOW, 0, 0, 1600, 900, NULL, (HMENU)NULL, hInstance, NULL);
+	ShowCursor(false);
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 
@@ -59,6 +60,7 @@ RECT rt;
 
 static Player* player;
 static POINT mousePoint;
+static CImage cursor;
 static bool checkKeyInput[4];
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -77,6 +79,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
 			SetTimer(hWnd, 1001, POSITION_REFRESH_DURATION, PositionRefresh);
+
+			cursor.Load(L"Cursor.bmp");
+			cursor.SetTransparentColor(RGB(0, 255, 0));
 			break;
 		}
 
@@ -143,6 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		case WM_MOUSEMOVE: {
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
+			player->SetCameraRelativePosition({ rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 });
 			break;
 		}
 
@@ -176,39 +182,39 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 	}
 
 	AnimationStatus pastStatus = player->GetMoveStatus();
-	double tanValue = TanByPoint(player->GetPosition(), mousePoint);
+	double tanValue = TanByPoint(player->GetCameraRelativePosition(), mousePoint);
 
-	if (mousePoint.x < player->GetPosition().x && (tanValue >= TAN_22_5 && tanValue <= TAN_67_5)) {
+	if (mousePoint.x < player->GetCameraRelativePosition().x && (tanValue >= TAN_22_5 && tanValue <= TAN_67_5)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleUpLeft);
 		else
 			player->SetMoveStatus(MoveUpLeft);
 	}
-	else if (mousePoint.x > player->GetPosition().x && (tanValue <= -TAN_22_5 && tanValue >= -TAN_67_5)) {
+	else if (mousePoint.x > player->GetCameraRelativePosition().x && (tanValue <= -TAN_22_5 && tanValue >= -TAN_67_5)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleUpRight);
 		else
 		player->SetMoveStatus(MoveUpRight);
 	}
-	else if (mousePoint.x < player->GetPosition().x && ((tanValue <= TAN_22_5 && tanValue >= 0) || tanValue >= -TAN_67_5 && tanValue <= 0)) {
+	else if (mousePoint.x < player->GetCameraRelativePosition().x && ((tanValue <= TAN_22_5 && tanValue >= 0) || tanValue >= -TAN_67_5 && tanValue <= 0)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleLeft);
 		else
 			player->SetMoveStatus(MoveLeft);
 	}
-	else if (mousePoint.x > player->GetPosition().x && ((tanValue >= -TAN_22_5 && tanValue <= 0) || tanValue <= TAN_67_5 && tanValue >= 0)) {
+	else if (mousePoint.x > player->GetCameraRelativePosition().x && ((tanValue >= -TAN_22_5 && tanValue <= 0) || tanValue <= TAN_67_5 && tanValue >= 0)) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleRight);
 		else
 			player->SetMoveStatus(MoveRight);
 	}
-	else if (mousePoint.y < player->GetPosition().y) {
+	else if (mousePoint.y < player->GetCameraRelativePosition().y) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleUp);
 		else
 			player->SetMoveStatus(MoveUp);
 	}
-	else if (mousePoint.y > player->GetPosition().y) {
+	else if (mousePoint.y > player->GetCameraRelativePosition().y) {
 		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
 			player->SetMoveStatus(IdleDown);
 		else
@@ -318,6 +324,7 @@ void PlayAnimation(HDC hDC) {
 	SelectObject(mDC, hBitmap);
 
 	player->PlayAnimation(mDC);
+	cursor.Draw(mDC, mousePoint.x - 16, mousePoint.y - 16, 33, 33);
 	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
 
 	DeleteObject(hBitmap);
