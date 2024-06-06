@@ -39,5 +39,6 @@ static const POINT ANIMATION_OFFSET_PLAYER_ROLL_UPLEFT = { 0, 300 };
 static const POINT ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT = { 0, 300 };
 #pragma endregion
 
+static const double PI = 3.14159265;
 static const double TAN_22_5 = 0.41421356;
 static const double TAN_67_5 = 2.41421356;

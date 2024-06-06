@@ -127,12 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="creatures.cpp" />
+    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Creatures.cpp" />
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="datas.h" />
-    <ClInclude Include="creatures.h" />
+    <ClInclude Include="Creatures.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="values.h" />
   </ItemGroup>
@@ -140,6 +142,7 @@
     <ResourceCompile Include="TermProject.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="bullet.bmp" />
     <Image Include="Cursor.bmp" />
     <Image Include="heart.bmp" />
     <Image Include="The Pilot.bmp" />

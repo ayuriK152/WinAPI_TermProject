@@ -18,12 +18,15 @@
     <ClCompile Include="Main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="creatures.cpp">
+    <ClCompile Include="Creatures.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="creatures.h">
+    <ClInclude Include="Creatures.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="datas.h">
@@ -33,6 +36,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="values.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -49,6 +55,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="heart.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="bullet.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

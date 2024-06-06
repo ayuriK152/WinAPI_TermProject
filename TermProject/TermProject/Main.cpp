@@ -6,7 +6,8 @@
 #include <vector>
 #include <atlImage.h>
 #include "resource.h"
-#include "creatures.h"
+#include "Creatures.h"
+#include "Bullet.h"
 #include "values.h"
 
 using namespace std;
@@ -59,8 +60,9 @@ HBITMAP hBitmap;
 RECT rt;
 
 static Player* player;
-static POINT mousePoint;
-static CImage cursor, heart;
+static vector<Bullet> bullets;
+static POINT mousePoint, centerOffset;
+static CImage cursor, heart, bullet;
 static bool checkKeyInput[4];
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -84,6 +86,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 			cursor.Load(L"Cursor.bmp");
 			cursor.SetTransparentColor(RGB(0, 255, 0));
+
+			bullet.Load(L"bullet.bmp");
+			bullet.SetTransparentColor(RGB(0, 255, 0));
 			break;
 		}
 
@@ -130,7 +135,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case WM_LBUTTONDOWN: {
+			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
 
+			bullets.push_back(Bullet(player->GetPosition(), 15, atan2(player->GetCameraRelativePosition().x - mousePoint.x, player->GetCameraRelativePosition().y - mousePoint.y)));
 			break;
 		}
 
@@ -151,6 +158,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_MOUSEMOVE: {
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
 			player->SetCameraRelativePosition({ rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 });
+			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 			break;
 		}
 
@@ -229,6 +237,7 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 }
 
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 	if (player->IsRolling()) {
 		int moveSpeed = 0;
 		if (player->GetAnimationIndex() > 6)
@@ -326,6 +335,10 @@ void PlayAnimation(HDC hDC) {
 	SelectObject(mDC, hBitmap);
 
 	player->PlayAnimation(mDC);
+	for (int i = 0; i < bullets.size(); i++) {
+		bullets[i].Move();
+		bullet.Draw(mDC, bullets[i].GetPosition().x - 13 + centerOffset.x, bullets[i].GetPosition().y - 13 + centerOffset.y, 27, 27);
+	}
 	cursor.Draw(mDC, mousePoint.x - 16, mousePoint.y - 16, 33, 33);
 
 	for (int i = 0; i < player->GetOriginHp() / 2; i++) {
