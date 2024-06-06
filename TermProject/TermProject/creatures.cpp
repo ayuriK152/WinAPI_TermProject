@@ -3,7 +3,8 @@
 #include "creatures.h"
 
 Player::Player() {
-	hp = 6;
+	originHP = 6;
+	currentHP = 6;
 	animationIndex = 0;
 	isMoveDiagonal = false;
 	position = { 0, 0 };
@@ -12,7 +13,8 @@ Player::Player() {
 }
 
 Player::Player(int x, int y) {
-	hp = 6;
+	originHP = 6;
+	currentHP = 6;
 	animationIndex = 0;
 	isMoveDiagonal = false;
 	position = { x, y };
@@ -24,9 +26,21 @@ Player::~Player() {
 	DeleteObject(spriteBitmap);
 }
 
-int Player::GetHp() { return hp; }
+int Player::GetOriginHp() { return originHP; }
 
-void Player::SetHp(int value) { hp = value; }
+int Player::GetCurrentHp() { return currentHP; }
+
+void Player::SetCurrentHp(int value) {
+	currentHP = value;
+}
+
+void Player::GetDamge(int value) {
+	currentHP -= value;
+}
+
+void Player::GetHeal(int value) {
+	currentHP += value;
+}
 
 POINT Player::GetPosition() { return position; }
 

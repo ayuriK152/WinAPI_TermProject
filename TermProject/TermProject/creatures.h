@@ -4,7 +4,7 @@
 
 class Creature {
 protected:
-	int hp;
+	int originHP, currentHP;
 	int animationIndex;
 	bool isMoveDiagonal;
 	POINT position;
@@ -12,9 +12,15 @@ protected:
 	AnimationStatus animationStatus;
 
 public:
-	virtual int GetHp() = 0;
+	virtual int GetOriginHp() = 0;
 
-	virtual void SetHp(int value) = 0;
+	virtual int GetCurrentHp() = 0;
+
+	virtual void SetCurrentHp(int value) = 0;
+
+	virtual void GetDamge(int value) = 0;
+
+	virtual void GetHeal(int value) = 0;
 
 	virtual POINT GetPosition() = 0;
 
@@ -53,9 +59,15 @@ public:
 
 	~Player();
 
-	virtual int GetHp();
+	virtual int GetOriginHp();
 
-	virtual void SetHp(int value);
+	virtual int GetCurrentHp();
+
+	virtual void SetCurrentHp(int value);
+
+	virtual void GetDamge(int value);
+
+	virtual void GetHeal(int value);
 
 	virtual POINT GetPosition();
 

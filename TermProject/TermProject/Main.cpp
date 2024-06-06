@@ -60,7 +60,7 @@ RECT rt;
 
 static Player* player;
 static POINT mousePoint;
-static CImage cursor;
+static CImage cursor, heart;
 static bool checkKeyInput[4];
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -76,6 +76,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 			player = new Player(rt.right / 2, rt.bottom / 2);
 			player->SetSpriteBitmap(L"The Pilot.bmp");
+			heart.Load(L"heart.bmp");
+			heart.SetTransparentColor(RGB(0, 255, 0));
 
 			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
 			SetTimer(hWnd, 1001, POSITION_REFRESH_DURATION, PositionRefresh);
@@ -325,6 +327,15 @@ void PlayAnimation(HDC hDC) {
 
 	player->PlayAnimation(mDC);
 	cursor.Draw(mDC, mousePoint.x - 16, mousePoint.y - 16, 33, 33);
+
+	for (int i = 0; i < player->GetOriginHp() / 2; i++) {
+		if (player->GetCurrentHp() - (i + 1) * 2 == -1)
+			heart.Draw(mDC, 20 + i * PLAYER_HEART_SIZE * 3, 20, PLAYER_HEART_SIZE * 3, PLAYER_HEART_SIZE * 3, PLAYER_HEART_SIZE, 0, PLAYER_HEART_SIZE, PLAYER_HEART_SIZE);
+		else if (player->GetCurrentHp() - (i + 1) * 2 <= -2)
+			heart.Draw(mDC, 20 + i * PLAYER_HEART_SIZE * 3, 20, PLAYER_HEART_SIZE * 3, PLAYER_HEART_SIZE * 3, PLAYER_HEART_SIZE * 2,  0,PLAYER_HEART_SIZE, PLAYER_HEART_SIZE);
+		else
+			heart.Draw(mDC, 20 + i * PLAYER_HEART_SIZE * 3, 20, PLAYER_HEART_SIZE * 3, PLAYER_HEART_SIZE * 3, 0, 0, PLAYER_HEART_SIZE, PLAYER_HEART_SIZE);
+	}
 	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
 
 	DeleteObject(hBitmap);

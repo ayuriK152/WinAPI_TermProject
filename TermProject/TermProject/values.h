@@ -5,6 +5,7 @@ static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
 static const int POSITION_REFRESH_DURATION = 1;
 
 static const int PLAYER_CHARACTER_SIZE = 75;
+static const int PLAYER_HEART_SIZE = 17;
 
 static const int PLAYER_MOVE_SPEED = 8;
 static const int PLAYER_MOVE_SPEED_DIAGONAL = 6;

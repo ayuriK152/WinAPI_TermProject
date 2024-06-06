@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Cursor.bmp" />
+    <Image Include="heart.bmp" />
     <Image Include="The Pilot.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
