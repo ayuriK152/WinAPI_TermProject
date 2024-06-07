@@ -57,11 +57,11 @@ void Player::SetSpriteBitmap(LPCTSTR fileName) { spriteBitmap.Load(fileName); }
 void Player::PlayAnimation(HDC hDC) {
 	switch (animationStatus) {
 		case IdleUp: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UP.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UP.y, 25, 25);
 			break;
 		}
 		case IdleDown: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.y, 25, 25);
 			break;
 		}
 		case IdleLeft: {
@@ -73,12 +73,12 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_IDLE_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_IDLE_LEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case IdleRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.y, 25, 25);
 			break;
 		}
 		case IdleUpLeft: {
@@ -90,20 +90,20 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_IDLE_UPLEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_IDLE_UPLEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case IdleUpRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.y, 25, 25);
 			break;
 		}
 		case MoveUp: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UP.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UP.y, 25, 25);
 			break;
 		}
 		case MoveDown: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.y, 25, 25);
 			break;
 		}
 		case MoveLeft: {
@@ -115,12 +115,12 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_MOVE_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_MOVE_LEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case MoveRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.y, 25, 25);
 			break;
 		}
 		case MoveUpLeft: {
@@ -132,20 +132,20 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_MOVE_UPLEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_MOVE_UPLEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case MoveUpRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.y, 25, 25);
 			break;
 		}
 		case RollUp: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_UP.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_UP.y, 25, 25);
 			break;
 		}
 		case RollDown: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_DOWN.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_DOWN.y, 25, 25);
 			break;
 		}
 		case RollLeft: {
@@ -157,12 +157,12 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_ROLL_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_ROLL_LEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case RollRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
 			break;
 		}
 		case RollUpLeft: {
@@ -174,12 +174,12 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_ROLL_UPLEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_ROLL_UPLEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case RollUpRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_UPRIGHT.y, 25, 25);
 			break;
 		}
 		case RollDownLeft: {
@@ -191,12 +191,12 @@ void Player::PlayAnimation(HDC hDC) {
 					temp.SetPixel(x, y, spriteBitmap.GetPixel(ANIMATION_OFFSET_PLAYER_ROLL_LEFT.x + 25 * (animationIndex + 1) - 1 - x, ANIMATION_OFFSET_PLAYER_ROLL_LEFT.y + y));
 				}
 			}
-			temp.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
+			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
 			DeleteObject(temp);
 			break;
 		}
 		case RollDownRight: {
-			spriteBitmap.Draw(hDC, cameraRelativePosition.x, cameraRelativePosition.y, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
+			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
 			break;
 		}
 	}
