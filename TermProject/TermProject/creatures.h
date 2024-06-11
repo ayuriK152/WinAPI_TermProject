@@ -8,6 +8,7 @@ protected:
 	int animationIndex;
 	bool isMoveDiagonal;
 	POINT position;
+	RECT sizeRect;
 	CImage spriteBitmap;
 	AnimationStatus animationStatus;
 
@@ -45,6 +46,8 @@ public:
 	virtual bool IsMoveDiagonal() = 0;
 
 	virtual void SetMoveDiagonalCheck(bool value) = 0;
+
+	virtual RECT GetSizeRect() = 0;
 };
 
 class Player : Creature {
@@ -92,6 +95,8 @@ public:
 	virtual bool IsMoveDiagonal();
 
 	virtual void SetMoveDiagonalCheck(bool value);
+
+	virtual RECT GetSizeRect();
 
 	POINT GetCameraRelativePosition();
 

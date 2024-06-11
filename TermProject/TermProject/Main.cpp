@@ -65,7 +65,8 @@ static vector<Bullet> bullets;
 static POINT mousePoint, centerOffset;
 static CImage cursor, heart, bullet;
 static Map* map;
-static bool checkKeyInput[4];
+static bool checkKeyInput[4], checkMovableDirection[4];
+static int currentMapIdx;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	srand((unsigned int)time(NULL));
@@ -79,7 +80,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			hDC = GetDC(hWnd);
 			GetClientRect(hWnd, &rt);
 
-			player = new Player(rt.right / 2, rt.bottom / 2);
+			player = new Player();
 			player->SetSpriteBitmap(L"The Pilot.bmp");
 			heart.Load(L"heart.bmp");
 			heart.SetTransparentColor(RGB(0, 255, 0));
@@ -93,7 +94,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			bullet.Load(L"bullet.bmp");
 			bullet.SetTransparentColor(RGB(0, 255, 0));
 
+			mousePoint = { rt.right / 2, rt.bottom / 2 };
+			player->SetCameraRelativePosition({ rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 });
+			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
+
 			map = new Map(hDC);
+			currentMapIdx = 0;
 			ReleaseDC(hWnd, hDC);
 			break;
 		}
@@ -143,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_LBUTTONDOWN: {
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
 
-			bullets.push_back(Bullet(player->GetPosition(), 15, atan2(player->GetCameraRelativePosition().x - mousePoint.x, player->GetCameraRelativePosition().y - mousePoint.y)));
+			bullets.push_back(Bullet(player->GetPosition(), 25, atan2(player->GetCameraRelativePosition().x - mousePoint.x, player->GetCameraRelativePosition().y - mousePoint.y)));
 			break;
 		}
 
@@ -244,6 +250,9 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
+
+	map->rooms[0].CheckMovableDirection(checkMovableDirection, player->GetPosition(), player->GetSizeRect());
+
 	if (player->IsRolling()) {
 		int moveSpeed = 0;
 		if (player->GetAnimationIndex() > 6)
@@ -291,7 +300,7 @@ void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 	}
 
 	else {
-		if (checkKeyInput[0]) {
+		if (checkKeyInput[0] && !checkMovableDirection[0]) {
 			if (checkKeyInput[2] || checkKeyInput[3]) {
 				player->SetMoveDiagonalCheck(true);
 				player->Move(0, -PLAYER_MOVE_SPEED_DIAGONAL);
@@ -301,7 +310,7 @@ void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 				player->Move(0, -PLAYER_MOVE_SPEED);
 			}
 		}
-		if (checkKeyInput[1]) {
+		if (checkKeyInput[1] && !checkMovableDirection[1]) {
 			if (checkKeyInput[2] || checkKeyInput[3]) {
 				player->SetMoveDiagonalCheck(true);
 				player->Move(0, PLAYER_MOVE_SPEED_DIAGONAL);
@@ -311,7 +320,7 @@ void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 				player->Move(0, PLAYER_MOVE_SPEED);
 			}
 		}
-		if (checkKeyInput[2]) {
+		if (checkKeyInput[2] && !checkMovableDirection[2]) {
 			if (checkKeyInput[0] || checkKeyInput[1]) {
 				player->SetMoveDiagonalCheck(true);
 				player->Move(-PLAYER_MOVE_SPEED_DIAGONAL, 0);
@@ -321,7 +330,7 @@ void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 				player->Move(-PLAYER_MOVE_SPEED, 0);
 			}
 		}
-		if (checkKeyInput[3]) {
+		if (checkKeyInput[3] && !checkMovableDirection[3]) {
 			if (checkKeyInput[0] || checkKeyInput[1]) {
 				player->SetMoveDiagonalCheck(true);
 				player->Move(PLAYER_MOVE_SPEED_DIAGONAL, 0);
@@ -341,11 +350,12 @@ void PlayAnimation(HDC hDC) {
 	SelectObject(mDC, hBitmap);
 
 	map->DrawFloor(mDC, centerOffset, rt);
+	//map->DrawWall(mDC, centerOffset, rt);
 
 	player->PlayAnimation(mDC);
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i].Move();
-		bullet.Draw(mDC, bullets[i].GetPosition().x - 13 + centerOffset.x, bullets[i].GetPosition().y - 13 + centerOffset.y, 27, 27);
+		bullet.Draw(mDC, bullets[i].GetPosition().x - 21 + centerOffset.x, bullets[i].GetPosition().y - 21 + centerOffset.y, 45, 45);
 	}
 	cursor.Draw(mDC, mousePoint.x - 16, mousePoint.y - 16, 33, 33);
 

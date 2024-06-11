@@ -16,18 +16,20 @@ public:
 	Room(int mapDataNum);
 
 	~Room();
+
+	void CheckMovableDirection(bool flags[], POINT playerPosition, RECT playerHitbox);
 };
 
 class Map {
 private:
 	int mapDataNum;
 	int** mapData;
-	HDC mapMemDC[2];
+	HDC mapMemDC;
 	POINT mapSize;
-	vector<Room> rooms;
 	
 
 public:
+	vector<Room> rooms;
 	CImage tilemapBmp;
 	bool isTilemapLoaded;
 

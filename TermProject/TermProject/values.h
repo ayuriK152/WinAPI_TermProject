@@ -9,7 +9,7 @@ static const int PLAYER_HEART_SIZE		= 17;
 
 static const int PLAYER_MOVE_SPEED					= 8;
 static const int PLAYER_MOVE_SPEED_DIAGONAL			= 6;
-static const int PLAYER_ROLL_START_SPEED			= 10;
+static const int PLAYER_ROLL_START_SPEED			= 12;
 static const int PLAYER_ROLL_ING_SPEED				= 5;
 static const int PLAYER_ROLL_END_SPEED				= 6;
 static const int PLAYER_ROLL_START_SPEED_DIAGONAL	= 8;

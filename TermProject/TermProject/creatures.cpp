@@ -8,6 +8,12 @@ Player::Player() {
 	animationIndex = 0;
 	isMoveDiagonal = false;
 	position = { 0, 0 };
+	sizeRect = {
+		position.x - PLAYER_CHARACTER_SIZE / 2, 
+		position.y - PLAYER_CHARACTER_SIZE / 2, 
+		position.x + PLAYER_CHARACTER_SIZE / 2, 
+		position.y + PLAYER_CHARACTER_SIZE / 2 
+	};
 	animationStatus = IdleDown;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
 }
@@ -18,6 +24,12 @@ Player::Player(int x, int y) {
 	animationIndex = 0;
 	isMoveDiagonal = false;
 	position = { x, y };
+	sizeRect = {
+		position.x - PLAYER_CHARACTER_SIZE / 2,
+		position.y - PLAYER_CHARACTER_SIZE / 2,
+		position.x + PLAYER_CHARACTER_SIZE / 2,
+		position.y + PLAYER_CHARACTER_SIZE / 2
+	};
 	animationStatus = IdleDown;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
 }
@@ -46,7 +58,15 @@ POINT Player::GetPosition() { return position; }
 
 void Player::SetPosition(int x, int y) { position = { x, y }; }
 
-void Player::Move(int x, int y) { position = { position.x + x, position.y + y }; }
+void Player::Move(int x, int y) {
+	position = { position.x + x, position.y + y };
+	sizeRect = {
+		position.x - PLAYER_CHARACTER_SIZE / 2,
+		position.y - PLAYER_CHARACTER_SIZE / 2,
+		position.x + PLAYER_CHARACTER_SIZE / 2,
+		position.y + PLAYER_CHARACTER_SIZE / 2
+	};
+}
 
 AnimationStatus Player::GetMoveStatus() { return animationStatus; }
 
@@ -313,6 +333,9 @@ bool Player::IsMoveDiagonal() {
 
 void Player::SetMoveDiagonalCheck(bool value) {
 	isMoveDiagonal = value;
+}
+RECT Player::GetSizeRect() {
+	return sizeRect;
 }
 
 POINT Player::GetCameraRelativePosition() {
