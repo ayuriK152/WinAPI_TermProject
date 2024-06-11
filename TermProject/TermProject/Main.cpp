@@ -9,6 +9,7 @@
 #include "Creatures.h"
 #include "Bullet.h"
 #include "values.h"
+#include "Map.h"
 
 using namespace std;
 
@@ -63,17 +64,19 @@ static Player* player;
 static vector<Bullet> bullets;
 static POINT mousePoint, centerOffset;
 static CImage cursor, heart, bullet;
+static Map* map;
 static bool checkKeyInput[4];
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	srand((unsigned int)time(NULL));
 	PAINTSTRUCT ps;
-	HDC hDC, mDC;
+	HDC hDC;
 	HBRUSH hBrush, oldBrush;
 	HPEN hPen, oldPen;
 
 	switch (uMsg) {
 		case WM_CREATE: {
+			hDC = GetDC(hWnd);
 			GetClientRect(hWnd, &rt);
 
 			player = new Player(rt.right / 2, rt.bottom / 2);
@@ -89,6 +92,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 			bullet.Load(L"bullet.bmp");
 			bullet.SetTransparentColor(RGB(0, 255, 0));
+
+			map = new Map(hDC);
+			ReleaseDC(hWnd, hDC);
 			break;
 		}
 
@@ -334,6 +340,8 @@ void PlayAnimation(HDC hDC) {
 	mDC = CreateCompatibleDC(hDC);
 	SelectObject(mDC, hBitmap);
 
+	map->DrawFloor(mDC, centerOffset, rt);
+
 	player->PlayAnimation(mDC);
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i].Move();
@@ -349,6 +357,7 @@ void PlayAnimation(HDC hDC) {
 		else
 			heart.Draw(mDC, 20 + i * PLAYER_HEART_SIZE * 3, 20, PLAYER_HEART_SIZE * 3, PLAYER_HEART_SIZE * 3, 0, 0, PLAYER_HEART_SIZE, PLAYER_HEART_SIZE);
 	}
+
 	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
 
 	DeleteObject(hBitmap);
