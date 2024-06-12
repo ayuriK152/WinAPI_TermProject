@@ -8,10 +8,10 @@ Player::Player() {
 	animationIndex = 0;
 	isMoveDiagonal = false;
 	position = { 0, 0 };
-	sizeRect = {
-		position.x - PLAYER_CHARACTER_SIZE / 2, 
+	hitboxRect = {
+		position.x - (PLAYER_CHARACTER_SIZE / 2 - 14), 
 		position.y - PLAYER_CHARACTER_SIZE / 2, 
-		position.x + PLAYER_CHARACTER_SIZE / 2, 
+		position.x + (PLAYER_CHARACTER_SIZE / 2 - 14),
 		position.y + PLAYER_CHARACTER_SIZE / 2 
 	};
 	animationStatus = IdleDown;
@@ -24,7 +24,7 @@ Player::Player(int x, int y) {
 	animationIndex = 0;
 	isMoveDiagonal = false;
 	position = { x, y };
-	sizeRect = {
+	hitboxRect = {
 		position.x - PLAYER_CHARACTER_SIZE / 2,
 		position.y - PLAYER_CHARACTER_SIZE / 2,
 		position.x + PLAYER_CHARACTER_SIZE / 2,
@@ -60,7 +60,7 @@ void Player::SetPosition(int x, int y) { position = { x, y }; }
 
 void Player::Move(int x, int y) {
 	position = { position.x + x, position.y + y };
-	sizeRect = {
+	hitboxRect = {
 		position.x - PLAYER_CHARACTER_SIZE / 2,
 		position.y - PLAYER_CHARACTER_SIZE / 2,
 		position.x + PLAYER_CHARACTER_SIZE / 2,
@@ -334,8 +334,8 @@ bool Player::IsMoveDiagonal() {
 void Player::SetMoveDiagonalCheck(bool value) {
 	isMoveDiagonal = value;
 }
-RECT Player::GetSizeRect() {
-	return sizeRect;
+RECT Player::GetHitboxRect() {
+	return hitboxRect;
 }
 
 POINT Player::GetCameraRelativePosition() {

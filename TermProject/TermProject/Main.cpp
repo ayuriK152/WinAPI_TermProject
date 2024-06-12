@@ -149,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_LBUTTONDOWN: {
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
 
-			bullets.push_back(Bullet(player->GetPosition(), 25, atan2(player->GetCameraRelativePosition().x - mousePoint.x, player->GetCameraRelativePosition().y - mousePoint.y)));
+			bullets.push_back(Bullet(player->GetPosition(), { 45, 45 }, 25, atan2(player->GetCameraRelativePosition().x - mousePoint.x, player->GetCameraRelativePosition().y - mousePoint.y)));
 			break;
 		}
 
@@ -251,7 +251,7 @@ void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwT
 void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 
-	map->rooms[0].CheckMovableDirection(checkMovableDirection, player->GetPosition(), player->GetSizeRect());
+	map->CheckMovableDirection(checkMovableDirection, player->GetPosition(), player->GetHitboxRect());
 
 	if (player->IsRolling()) {
 		int moveSpeed = 0;
@@ -264,35 +264,51 @@ void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTi
 
 		switch (player->GetMoveStatus()) {
 			case RollUp: {
-				player->Move(0, -moveSpeed);
+				if (!checkMovableDirection[0])
+					player->Move(0, -moveSpeed);
 				break;
 			}
 			case RollDown: {
-				player->Move(0, moveSpeed);
+				if (!checkMovableDirection[1])
+					player->Move(0, moveSpeed);
 				break;
 			}
 			case RollLeft: {
-				player->Move(-moveSpeed, 0);
+				if (!checkMovableDirection[2])
+					player->Move(-moveSpeed, 0);
 				break;
 			}
 			case RollRight: {
-				player->Move(moveSpeed, 0);
+				if (!checkMovableDirection[3])
+					player->Move(moveSpeed, 0);
 				break;
 			}
 			case RollUpLeft: {
-				player->Move(-moveSpeed, -moveSpeed);
+				if (!checkMovableDirection[0])
+					player->Move(0, -moveSpeed);
+				if (!checkMovableDirection[2])
+					player->Move(-moveSpeed, 0);
 				break;
 			}
 			case RollUpRight: {
-				player->Move(moveSpeed, -moveSpeed);
+				if (!checkMovableDirection[0])
+					player->Move(0, -moveSpeed);
+				if (!checkMovableDirection[3])
+					player->Move(moveSpeed, 0);
 				break;
 			}
 			case RollDownLeft: {
-				player->Move(-moveSpeed, moveSpeed);
+				if (!checkMovableDirection[1])
+					player->Move(0, moveSpeed);
+				if (!checkMovableDirection[2])
+					player->Move(-moveSpeed, 0);
 				break;
 			}
 			case RollDownRight: {
-				player->Move(moveSpeed, moveSpeed);
+				if (!checkMovableDirection[1])
+					player->Move(0, moveSpeed);
+				if (!checkMovableDirection[3])
+					player->Move(moveSpeed, 0);
 				break;
 			}
 		}
@@ -350,13 +366,21 @@ void PlayAnimation(HDC hDC) {
 	SelectObject(mDC, hBitmap);
 
 	map->DrawFloor(mDC, centerOffset, rt);
-	//map->DrawWall(mDC, centerOffset, rt);
 
 	player->PlayAnimation(mDC);
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i].Move();
-		bullet.Draw(mDC, bullets[i].GetPosition().x - 21 + centerOffset.x, bullets[i].GetPosition().y - 21 + centerOffset.y, 45, 45);
+		if (map->IsCollideWall(bullets[i].GetHitboxRect())) {
+			bullets.erase(bullets.begin() + i);
+			i -= 1;
+		}
+		else {
+			bullet.Draw(mDC, bullets[i].GetPosition().x - 22 + centerOffset.x, bullets[i].GetPosition().y - 22 + centerOffset.y, 45, 45);
+		}
 	}
+
+	map->DrawCeil(mDC, centerOffset, rt);
+
 	cursor.Draw(mDC, mousePoint.x - 16, mousePoint.y - 16, 33, 33);
 
 	for (int i = 0; i < player->GetOriginHp() / 2; i++) {

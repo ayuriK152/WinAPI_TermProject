@@ -3,17 +3,37 @@
 #include "values.h"
 
 Room::Room(int mapDataNum) {
+	roomIndex = mapDataNum;
 	switch (mapDataNum) {
 		case 0: {
-			roomSize = { 22, 20 };
-			mapPath = new int* [20];
-			for (int y = 0; y < 20; y++) {
-				mapPath[y] = new int[22];
+			roomSize = { 22, 22 };
+			drawOffset = { 0, 0 };
+
+			for (int y = 0; y < 22; y++) {
+				pathData.push_back({});
+				floorData.push_back({});
+				ceilData.push_back({});
+				for (int x = 0; x < 22; x++) {
+					pathData[y].push_back(MAP_DATA_INIT_PATH[y][x]);
+					floorData[y].push_back(MAP_DATA_INIT_LAYER_FIRST[y][x]);
+					ceilData[y].push_back(MAP_DATA_INIT_LAYER_SECOND[y][x]);
+				}
 			}
 
-			for (int y = 0; y < 20; y++) {
+			break;
+		}
+		case 1: {
+			roomSize = { 22, 22 };
+			drawOffset = { 0, 1 };
+
+			for (int y = 0; y < 22; y++) {
+				pathData.push_back({});
+				floorData.push_back({});
+				ceilData.push_back({});
 				for (int x = 0; x < 22; x++) {
-					mapPath[y][x] = MAP_DATA_INIT_PATH[y][x];
+					pathData[y].push_back(MAP_DATA_NO1_PATH[y][x]);
+					floorData[y].push_back(MAP_DATA_NO1_LAYER_FIRST[y][x]);
+					ceilData[y].push_back(MAP_DATA_NO1_LAYER_SECOND[y][x]);
 				}
 			}
 
@@ -26,26 +46,26 @@ Room::~Room() {
 
 }
 
-void Room::CheckMovableDirection(bool flags[], POINT playerPosition, RECT playerHitbox) {
-	if (MAP_DATA_INIT_PATH[(playerHitbox.top + 594) / 54][(playerPosition.x + 594) / 54] == 0) {
+void Map::CheckMovableDirection(bool flags[], POINT playerPosition, RECT playerHitbox) {
+	if (pathData[(playerHitbox.top + 594) / 54][(playerPosition.x + 594) / 54] == 0) {
 		flags[0] = true;
 	}
 	else {
 		flags[0] = false;
 	}
-	if (MAP_DATA_INIT_PATH[(playerHitbox.bottom + 594) / 54][(playerPosition.x + 594) / 54] == 0) {
+	if (pathData[(playerHitbox.bottom + 594) / 54][(playerPosition.x + 594) / 54] == 0) {
 		flags[1] = true;
 	}
 	else {
 		flags[1] = false;
 	}
-	if (MAP_DATA_INIT_PATH[(playerPosition.y + 594) / 54][(playerHitbox.left + 594) / 54] == 0) {
+	if (pathData[(playerPosition.y + 594) / 54][(playerHitbox.left + 594) / 54] == 0) {
 		flags[2] = true;
 	}
 	else {
 		flags[2] = false;
 	}
-	if (MAP_DATA_INIT_PATH[(playerPosition.y + 594) / 54][(playerHitbox.right + 594) / 54] == 0) {
+	if (pathData[(playerPosition.y + 594) / 54][(playerHitbox.right + 594) / 54] == 0) {
 		flags[3] = true;
 	}
 	else {
@@ -53,53 +73,84 @@ void Room::CheckMovableDirection(bool flags[], POINT playerPosition, RECT player
 	}
 }
 
+bool Map::IsCollideWall(RECT hitbox) {
+	if (pathData[(hitbox.top + 594) / 54][(hitbox.left + 594) / 54] == 0 ||
+		pathData[(hitbox.top + 594) / 54][(hitbox.right + 594) / 54] == 0 ||
+		pathData[(hitbox.bottom + 594) / 54][(hitbox.left + 594) / 54] == 0 ||
+		pathData[(hitbox.bottom + 594) / 54][(hitbox.right + 594) / 54] == 0)
+		return true;
+	return false;
+}
+
 Map::Map(HDC hDC) {
-	this->mapDataNum = mapDataNum;
-	mapSize = { 3, 3 };
+	mapSize = { 22, 22 };
 	tilemapBmp.Load(L"TileMap.bmp");
 
 	rooms.push_back(Room(0));
+	rooms.push_back(Room(1));
+
+	POINT drawOffset = { 0, 0 };
+	for (int i = 0; i < rooms.size(); i++) {
+		mapSize = { mapSize.x + (rooms[i].roomSize.x * rooms[i].drawOffset.x), mapSize.y + (rooms[i].roomSize.y * rooms[i].drawOffset.y) };
+		drawOffset = { drawOffset.x + rooms[i].drawOffset.x, drawOffset.y + rooms[i].drawOffset.y };
+		for (int y = 0; y < rooms[i].roomSize.y; y++) {
+			pathData.push_back({});
+			floorData.push_back({});
+			ceilData.push_back({});
+			for (int x = 0; x < rooms[i].roomSize.x; x++) {
+				pathData[y + drawOffset.y * 22].push_back(rooms[i].pathData[y][x]);
+				floorData[y + drawOffset.y * 22].push_back(rooms[i].floorData[y][x]);
+				ceilData[y + drawOffset.y * 22].push_back(rooms[i].ceilData[y][x]);
+			}
+		}
+	}
+
+	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, 54 * 22, 54 * 44);
+	mapFloorMemDC = CreateCompatibleDC(hDC);
+
+	SelectObject(mapFloorMemDC, hBitmap);
+	for (int y = 0; y < 18; y++) {
+		for (int x = 0; x < 20; x++) {
+			tilemapBmp.Draw(mapFloorMemDC, (x + 1) * 54, (y + 3) * 54, 54, 54, TILEMAP_OFFSET_INITPLACE_START.x + x * 18, TILEMAP_OFFSET_INITPLACE_START.y + y * 18, 18, 18);
+		}
+	}
+	for (int y = 0; y < mapSize.y; y++) {
+		for (int x = 0; x < mapSize.x; x++) {
+			if (floorData[y][x] == -1)
+				continue;
+			tilemapBmp.Draw(mapFloorMemDC, x * 54, y * 54, 54, 54, floorData[y][x] * 18, 0, 18, 18);
+		}
+	}
+
+	DeleteObject(hBitmap);
+
+	hBitmap = CreateCompatibleBitmap(hDC, 54 * 22, 54 * 44);
+	mapWallMemDC = CreateCompatibleDC(hDC);
+	SelectObject(mapWallMemDC, hBitmap);
+
+	for (int y = 0; y < mapSize.y; y++) {
+		for (int x = 0; x < mapSize.x; x++) {
+			if (ceilData[y][x] == -1)
+				continue;
+			tilemapBmp.Draw(mapWallMemDC, x * 54, y * 54, 54, 54, ceilData[y][x] * 18, 0, 18, 18);
+		}
+	}
+
+	DeleteObject(hBitmap);
 }
 
 Map::~Map() {
 	for (int i = 0; i < rooms.size(); i++) {
 		rooms[i].~Room();
 	}
+	DeleteObject(mapFloorMemDC);
+	DeleteObject(mapWallMemDC);
 }
 
 void Map::DrawFloor(HDC hDC, POINT offset, RECT rt) {
-	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, 54 * 30, 54 * 30);
-	mapMemDC = CreateCompatibleDC(hDC);
-	SelectObject(mapMemDC, hBitmap);
+	StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapFloorMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCCOPY);
+}
 
-	for (int i = 0; i < rooms.size(); i++) {
-		if (i == 0) {
-			for (int y = 0; y < rooms[i].roomSize.y - 2; y++) {
-				for (int x = 0; x < rooms[i].roomSize.x - 2; x++) {
-					tilemapBmp.Draw(mapMemDC, (x + 1) * 54, (y + 3) * 54, 54, 54, TILEMAP_OFFSET_INITPLACE_START.x + x * 18, TILEMAP_OFFSET_INITPLACE_START.y + y * 18, 18, 18);
-				}
-			}
-		}
-		else {
-			for (int y = 0; y < rooms[i].roomSize.y - 2; y++) {
-				for (int x = 0; x < rooms[i].roomSize.x - 2; x++) {
-					tilemapBmp.Draw(mapMemDC, x * 54, y * 54, 54, 54, MAP_DATA_FIRST[y][x] * 18, 0, 18, 18);
-				}
-			}
-		}
-	}
-
-	for (int i = 0; i < rooms.size(); i++) {
-		for (int y = 0; y < rooms[i].roomSize.y + 2; y++) {
-			for (int x = 0; x < rooms[i].roomSize.x; x++) {
-				if (MAP_DATA_INIT_LAYER_FIRST[y][x] == -1)
-					continue;
-				tilemapBmp.Draw(mapMemDC, x * 54, y * 54, 54, 54, MAP_DATA_INIT_LAYER_FIRST[y][x] * 18, 0, 18, 18);
-			}
-		}
-	}
-
-	StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCCOPY);
-	DeleteObject(hBitmap);
-	DeleteObject(mapMemDC);
+void Map::DrawCeil(HDC hDC, POINT offset, RECT rt) {
+	StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapWallMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCPAINT);
 }

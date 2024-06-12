@@ -6,13 +6,17 @@ private:
 	int speed;
 	double angle;
 	POINT position;
+	POINT size;
+	RECT hitboxRect;
 
 public:
-	Bullet(POINT position, int speed, double angle);
+	Bullet(POINT position, POINT size, int speed, double angle);
 
 	~Bullet();
 
 	void Move();
 
 	POINT GetPosition();
+
+	RECT GetHitboxRect();
 };

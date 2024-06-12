@@ -4,28 +4,32 @@
 
 using namespace std;
 
-class Room {
-private:
-	int** mapPath;
-	int** mapLayer[2];
+class Passage {
 
+};
+
+class Room {
 public:
+	vector<vector<int>> pathData;
+	vector<vector<int>> floorData;
+	vector<vector<int>> ceilData;
 	int roomIndex;
 	POINT roomSize;
+	POINT drawOffset;
 
 	Room(int mapDataNum);
 
 	~Room();
-
-	void CheckMovableDirection(bool flags[], POINT playerPosition, RECT playerHitbox);
 };
 
 class Map {
 private:
-	int mapDataNum;
-	int** mapData;
-	HDC mapMemDC;
+	HDC mapFloorMemDC;
+	HDC mapWallMemDC;
 	POINT mapSize;
+	vector<vector<bool>> pathData;
+	vector<vector<int>> floorData;
+	vector<vector<int>> ceilData;
 	
 
 public:
@@ -37,5 +41,11 @@ public:
 
 	~Map();
 
+	void CheckMovableDirection(bool flags[], POINT playerPosition, RECT playerHitbox);
+	
+	bool IsCollideWall(RECT hitbox);
+
 	void DrawFloor(HDC hDC, POINT offset, RECT clientRt);
+
+	void DrawCeil(HDC hDC, POINT offset, RECT rt);
 };
