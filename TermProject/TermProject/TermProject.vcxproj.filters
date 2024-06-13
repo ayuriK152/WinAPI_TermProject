@@ -30,6 +30,12 @@
     <ClCompile Include="Gun.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="IngameManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MainmenuManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Creatures.h">
@@ -51,6 +57,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Gun.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IngameManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MainmenuManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -82,6 +94,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="AutoHandgun.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="BulletJunior.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

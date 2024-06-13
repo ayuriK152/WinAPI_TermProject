@@ -130,7 +130,9 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Creatures.cpp" />
     <ClCompile Include="Gun.cpp" />
+    <ClCompile Include="IngameManager.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainmenuManager.cpp" />
     <ClCompile Include="Map.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +140,8 @@
     <ClInclude Include="datas.h" />
     <ClInclude Include="Creatures.h" />
     <ClInclude Include="Gun.h" />
+    <ClInclude Include="IngameManager.h" />
+    <ClInclude Include="MainmenuManager.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="values.h" />
@@ -150,6 +154,7 @@
     <Image Include="AutoHandgunMask.bmp" />
     <Image Include="AutoHandgun.png" />
     <Image Include="bullet.bmp" />
+    <Image Include="BulletJunior.bmp" />
     <Image Include="Cursor.bmp" />
     <Image Include="heart.bmp" />
     <Image Include="The Pilot.bmp" />

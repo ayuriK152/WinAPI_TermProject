@@ -1,5 +1,12 @@
 #pragma once
 
+#define WM_GAMESCENECHANGED 0x7FFF
+
+enum GameScene {
+	MainMenu,
+	Ingame
+};
+
 enum AnimationStatus {
 	IdleUp,
 	IdleDown,
