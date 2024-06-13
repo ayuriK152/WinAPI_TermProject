@@ -13,17 +13,23 @@
 #include "values.h"
 #include "Map.h"
 
-static Player* player;
-static vector<Bullet*> bullets;
-static POINT mousePoint, centerOffset;
-static CImage cursor, heart, bullet;
-static Map* map;
-static bool checkKeyInput[4], checkMovableDirection[4];
-static int currentMapIdx;
-static void (CALLBACK* animationRefresh)(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-static void (CALLBACK* positionRefresh)(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-
 namespace Game {
+	static HDC hDC, mDC;
+	static PAINTSTRUCT ps;
+	static HBRUSH hBrush, oldBrush;
+	static HPEN hPen, oldPen;
+	static RECT rt;
+	static HBITMAP hBitmap;
+
+	static Player* player;
+	static vector<Bullet*> bullets;
+	static POINT mousePoint, centerOffset;
+	static CImage cursor, heart, bullet;
+	static Map* map;
+	static bool checkKeyInput[4], checkMovableDirection[4];
+	static int currentMapIdx;
+	static void (CALLBACK* animationRefresh)(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+	static void (CALLBACK* positionRefresh)(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 	void PlayAnimation(HDC hDC);
 

@@ -5,6 +5,7 @@ static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
 static const int POSITION_REFRESH_DURATION = 10;
 static const int CREATURE_GUN_HOLDING_DISTANCE = 40;
 
+static const int CURSOR_SIZE = 33;
 static const int PLAYER_CHARACTER_SIZE	= 75;
 static const int PLAYER_HEART_SIZE		= 17;
 

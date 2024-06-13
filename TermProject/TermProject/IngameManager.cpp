@@ -1,9 +1,5 @@
 #include "IngameManager.h"
 
-HDC mDC;
-HBITMAP hBitmap;
-RECT rt;
-
 void CALLBACK Game::AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	if (player->IsRolling()) {
 		player->UpdateAnimationIndex();
@@ -193,7 +189,7 @@ void Game::PlayAnimation(HDC hDC) {
 
 	map->DrawCeil(mDC, centerOffset, rt);
 
-	cursor.Draw(mDC, mousePoint.x - 16, mousePoint.y - 16, 33, 33);
+	cursor.Draw(mDC, mousePoint.x - CURSOR_SIZE / 2, mousePoint.y - CURSOR_SIZE / 2, CURSOR_SIZE, CURSOR_SIZE);
 
 	for (int i = 0; i < player->GetOriginHp() / 2; i++) {
 		if (player->GetCurrentHp() - (i + 1) * 2 == -1)
@@ -207,7 +203,7 @@ void Game::PlayAnimation(HDC hDC) {
 	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
 
 	DeleteObject(hBitmap);
-	DeleteObject(mDC);
+	DeleteDC(mDC);
 }
 
 double Game::DistanceByPoint(POINT p1, POINT p2) {
@@ -220,16 +216,8 @@ double Game::TanByPoint(POINT p1, POINT p2) {
 
 void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* gameScene) {
 	srand((unsigned int)time(NULL));
-	PAINTSTRUCT ps;
-	HDC hDC;
-	HBRUSH hBrush, oldBrush;
-	HPEN hPen, oldPen;
 
 	switch (uMsg) {
-		case WM_CREATE: {
-			break;
-		}
-					  
 		case WM_GAMESCENECHANGED: {
 			hDC = GetDC(hWnd);
 			GetClientRect(hWnd, &rt);
@@ -244,13 +232,15 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
 			SetTimer(hWnd, 1001, POSITION_REFRESH_DURATION, PositionRefresh);
 
-			cursor.Load(L"Cursor.bmp");
-			cursor.SetTransparentColor(RGB(0, 255, 0));
+			if (cursor.IsNull()) {
+				cursor.Load(L"Cursor.bmp");
+				cursor.SetTransparentColor(RGB(0, 255, 0));
+				mousePoint = { rt.right / 2, rt.bottom / 2 };
+			}
 
 			bullet.Load(L"bullet.bmp");
 			bullet.SetTransparentColor(RGB(0, 255, 0));
 
-			mousePoint = { rt.right / 2, rt.bottom / 2 };
 			player->SetCameraRelativePosition(mousePoint, rt);
 			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 

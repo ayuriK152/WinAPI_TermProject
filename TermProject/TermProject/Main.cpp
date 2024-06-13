@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 	WndClass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 	RegisterClassEx(&WndClass);
 
-	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_OVERLAPPEDWINDOW, 0, 0, 1600, 900, NULL, (HMENU)NULL, hInstance, NULL);
+	hWnd = CreateWindow(lpszClass, lpszWindowName, WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX, 0, 0, 1600, 900, NULL, (HMENU)NULL, hInstance, NULL);
 	ShowCursor(false);
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
@@ -55,6 +55,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdPa
 static GameScene gameScene = MainMenu;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (uMsg == WM_CREATE) {
+		SendMessage(hWnd, WM_GAMESCENECHANGED, wParam, lParam);
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	}
 	switch (gameScene) {
 		case MainMenu: {
 			Menu::Play(hWnd, uMsg, wParam, lParam, &gameScene);

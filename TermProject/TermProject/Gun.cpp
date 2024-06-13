@@ -40,7 +40,7 @@ void Gun::Draw(HDC hDC, POINT offset) {
 
 	DeleteObject(hBrush);
 	DeleteObject(hBitmap);
-	DeleteObject(mDC);
+	DeleteDC(mDC);
 }
 
 Bullet* Gun::Shoot(POINT playerPosition) {
