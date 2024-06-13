@@ -27,6 +27,9 @@
     <ClCompile Include="Map.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Gun.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Creatures.h">
@@ -45,6 +48,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Map.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Gun.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -67,6 +73,15 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="TileMap.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="AutoHandgun.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="AutoHandgunMask.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="AutoHandgun.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

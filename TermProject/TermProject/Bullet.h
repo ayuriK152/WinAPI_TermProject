@@ -5,12 +5,13 @@ class Bullet {
 private:
 	int speed;
 	double angle;
+	bool isHostile;
 	POINT position;
 	POINT size;
 	RECT hitboxRect;
 
 public:
-	Bullet(POINT position, POINT size, int speed, double angle);
+	Bullet(POINT startPosition, POINT size, int speed, double angle, bool isHostile);
 
 	~Bullet();
 

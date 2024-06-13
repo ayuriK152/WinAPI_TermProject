@@ -1,16 +1,23 @@
 #pragma once
+#include <vector>
 #include "datas.h"
 #include "values.h"
+#include "Gun.h"
+
+using namespace std;
 
 class Creature {
 protected:
 	int originHP, currentHP;
 	int animationIndex;
+	double angle;
 	bool isMoveDiagonal;
 	POINT position;
 	RECT hitboxRect;
 	CImage spriteBitmap;
 	AnimationStatus animationStatus;
+	vector<Gun*> guns;
+	POINT gunPosition;
 
 public:
 	virtual int GetOriginHp() = 0;
@@ -48,6 +55,8 @@ public:
 	virtual void SetMoveDiagonalCheck(bool value) = 0;
 
 	virtual RECT GetHitboxRect() = 0;
+
+	virtual Bullet* FireGun() = 0;
 };
 
 class Player : Creature {
@@ -98,11 +107,62 @@ public:
 
 	virtual RECT GetHitboxRect();
 
+	virtual Bullet* FireGun();
+
 	POINT GetCameraRelativePosition();
 
-	void SetCameraRelativePosition(POINT position);
+	void SetCameraRelativePosition(POINT position, RECT rt);
 
 	void Roll(bool checkKeyInput[]);
 
 	bool IsRolling();
+};
+
+class Enemy : Creature {
+private:
+	EnemyType enemyType;
+public:
+	Enemy(EnemyType enemyType);
+
+	Enemy(EnemyType enemyType, int x, int y);
+
+	~Enemy();
+
+	virtual int GetOriginHp();
+
+	virtual int GetCurrentHp();
+
+	virtual void SetCurrentHp(int value);
+
+	virtual void GetDamge(int value);
+
+	virtual void GetHeal(int value);
+
+	virtual POINT GetPosition();
+
+	virtual void SetPosition(int x, int y);
+
+	virtual void Move(int x, int y);
+
+	virtual AnimationStatus GetMoveStatus();
+
+	virtual void SetMoveStatus(AnimationStatus status);
+
+	virtual void SetSpriteBitmap(LPCTSTR fileName);
+
+	virtual void PlayAnimation(HDC hDC);
+
+	virtual int GetAnimationIndex();
+
+	virtual void SetAnimationIndex(int value);
+
+	virtual void UpdateAnimationIndex();
+
+	virtual bool IsMoveDiagonal();
+
+	virtual void SetMoveDiagonalCheck(bool value);
+
+	virtual RECT GetHitboxRect();
+
+	virtual Bullet* FireGun();
 };

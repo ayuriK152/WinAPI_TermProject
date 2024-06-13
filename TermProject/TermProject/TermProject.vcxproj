@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Creatures.cpp" />
+    <ClCompile Include="Gun.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
   </ItemGroup>
@@ -136,6 +137,7 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="datas.h" />
     <ClInclude Include="Creatures.h" />
+    <ClInclude Include="Gun.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="values.h" />
@@ -144,6 +146,9 @@
     <ResourceCompile Include="TermProject.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="AutoHandgun.bmp" />
+    <Image Include="AutoHandgunMask.bmp" />
+    <Image Include="AutoHandgun.png" />
     <Image Include="bullet.bmp" />
     <Image Include="Cursor.bmp" />
     <Image Include="heart.bmp" />

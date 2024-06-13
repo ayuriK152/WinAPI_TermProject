@@ -61,7 +61,7 @@ HBITMAP hBitmap;
 RECT rt;
 
 static Player* player;
-static vector<Bullet> bullets;
+static vector<Bullet*> bullets;
 static POINT mousePoint, centerOffset;
 static CImage cursor, heart, bullet;
 static Map* map;
@@ -95,7 +95,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			bullet.SetTransparentColor(RGB(0, 255, 0));
 
 			mousePoint = { rt.right / 2, rt.bottom / 2 };
-			player->SetCameraRelativePosition({ rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 });
+			player->SetCameraRelativePosition(mousePoint, rt);
 			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 
 			map = new Map(hDC);
@@ -148,8 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		case WM_LBUTTONDOWN: {
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
-
-			bullets.push_back(Bullet(player->GetPosition(), { 45, 45 }, 25, atan2(player->GetCameraRelativePosition().x - mousePoint.x, player->GetCameraRelativePosition().y - mousePoint.y)));
+			bullets.push_back(player->FireGun());
 			break;
 		}
 
@@ -169,7 +168,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		case WM_MOUSEMOVE: {
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
-			player->SetCameraRelativePosition({ rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 });
+			player->SetCameraRelativePosition(mousePoint, rt);
 			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 			break;
 		}
@@ -369,13 +368,13 @@ void PlayAnimation(HDC hDC) {
 
 	player->PlayAnimation(mDC);
 	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i].Move();
-		if (map->IsCollideWall(bullets[i].GetHitboxRect())) {
+		bullets[i]->Move();
+		if (map->IsCollideWall(bullets[i]->GetHitboxRect())) {
 			bullets.erase(bullets.begin() + i);
 			i -= 1;
 		}
 		else {
-			bullet.Draw(mDC, bullets[i].GetPosition().x - 22 + centerOffset.x, bullets[i].GetPosition().y - 22 + centerOffset.y, 45, 45);
+			bullet.Draw(mDC, bullets[i]->GetPosition().x - 22 + centerOffset.x, bullets[i]->GetPosition().y - 22 + centerOffset.y, 45, 45);
 		}
 	}
 

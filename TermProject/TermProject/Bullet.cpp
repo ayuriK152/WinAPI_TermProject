@@ -1,11 +1,12 @@
 #include <math.h>
 #include "Bullet.h"
 
-Bullet::Bullet(POINT position, POINT size, int speed, double angle) {
+Bullet::Bullet(POINT position, POINT size, int speed, double angle, bool isHostile) {
 	this->position = position;
 	this->size = size;
 	this->speed = speed;
 	this->angle = angle;
+	this->isHostile = isHostile;
 }
 
 Bullet::~Bullet() {

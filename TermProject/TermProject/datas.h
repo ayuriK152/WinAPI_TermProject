@@ -23,6 +23,16 @@ enum AnimationStatus {
 	RollDownRight
 };
 
+enum EnemyType {
+	BulletJunior,
+	ShotgunRed,
+	ShotgunBlue
+};
+
+enum GunType {
+	AutoHandgun
+};
+
 static const int MAP_DATA_INIT_PATH[22][22] = {
 	{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 },
 	{  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 },
