@@ -50,6 +50,9 @@ void Player::SetCurrentHp(int value) {
 
 void Player::GetDamge(int value) {
 	currentHP -= value;
+	if (currentHP <= 0) {
+		animationStatus = Death;
+	}
 }
 
 void Player::GetHeal(int value) {
@@ -354,7 +357,159 @@ RECT Player::GetHitboxRect() {
 }
 
 Bullet* Player::FireGun() {
-	return guns[0]->Shoot({ (gunPosition.x - cameraRelativePosition.x) + position.x, (gunPosition.y - cameraRelativePosition.y) + position.y });
+	return guns[0]->Shoot({ (gunPosition.x - cameraRelativePosition.x) + position.x, (gunPosition.y - cameraRelativePosition.y) + position.y }, 1);
+}
+
+void Player::AnimationRefresh(bool checkKeyInput[], POINT mousePoint) {
+	AnimationStatus pastStatus = GetMoveStatus();
+	double tanValue = TanByPoint(GetCameraRelativePosition(), mousePoint);
+
+	if (mousePoint.x < GetCameraRelativePosition().x && (tanValue >= TAN_22_5 && tanValue <= TAN_67_5)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			SetMoveStatus(IdleUpLeft);
+		else
+			SetMoveStatus(MoveUpLeft);
+	}
+	else if (mousePoint.x > GetCameraRelativePosition().x && (tanValue <= -TAN_22_5 && tanValue >= -TAN_67_5)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			SetMoveStatus(IdleUpRight);
+		else
+			SetMoveStatus(MoveUpRight);
+	}
+	else if (mousePoint.x < GetCameraRelativePosition().x && ((tanValue <= TAN_22_5 && tanValue >= 0) || tanValue >= -TAN_67_5 && tanValue <= 0)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			SetMoveStatus(IdleLeft);
+		else
+			SetMoveStatus(MoveLeft);
+	}
+	else if (mousePoint.x > GetCameraRelativePosition().x && ((tanValue >= -TAN_22_5 && tanValue <= 0) || tanValue <= TAN_67_5 && tanValue >= 0)) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			SetMoveStatus(IdleRight);
+		else
+			SetMoveStatus(MoveRight);
+	}
+	else if (mousePoint.y < GetCameraRelativePosition().y) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			SetMoveStatus(IdleUp);
+		else
+			SetMoveStatus(MoveUp);
+	}
+	else if (mousePoint.y > GetCameraRelativePosition().y) {
+		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
+			SetMoveStatus(IdleDown);
+		else
+			SetMoveStatus(MoveDown);
+	}
+	if (pastStatus != GetMoveStatus()) {
+		SetAnimationIndex(0);
+	}
+	UpdateAnimationIndex();
+}
+
+void Player::PositionRefresh(bool checkKeyInput[], bool checkMovableDirection[]) {
+	if (IsRolling()) {
+		int moveSpeed = 0;
+		if (GetAnimationIndex() > 6)
+			moveSpeed = IsMoveDiagonal() ? PLAYER_ROLL_END_SPEED_DIAGONAL : PLAYER_ROLL_END_SPEED;
+		else if (GetAnimationIndex() > 4)
+			moveSpeed = IsMoveDiagonal() ? PLAYER_ROLL_ING_SPEED_DIAGONAL : PLAYER_ROLL_ING_SPEED;
+		else
+			moveSpeed = IsMoveDiagonal() ? PLAYER_ROLL_START_SPEED_DIAGONAL : PLAYER_ROLL_START_SPEED;
+
+		switch (GetMoveStatus()) {
+			case RollUp: {
+				if (!checkMovableDirection[0])
+					Move(0, -moveSpeed);
+				break;
+			}
+			case RollDown: {
+				if (!checkMovableDirection[1])
+					Move(0, moveSpeed);
+				break;
+			}
+			case RollLeft: {
+				if (!checkMovableDirection[2])
+					Move(-moveSpeed, 0);
+				break;
+			}
+			case RollRight: {
+				if (!checkMovableDirection[3])
+					Move(moveSpeed, 0);
+				break;
+			}
+			case RollUpLeft: {
+				if (!checkMovableDirection[0])
+					Move(0, -moveSpeed);
+				if (!checkMovableDirection[2])
+					Move(-moveSpeed, 0);
+				break;
+			}
+			case RollUpRight: {
+				if (!checkMovableDirection[0])
+					Move(0, -moveSpeed);
+				if (!checkMovableDirection[3])
+					Move(moveSpeed, 0);
+				break;
+			}
+			case RollDownLeft: {
+				if (!checkMovableDirection[1])
+					Move(0, moveSpeed);
+				if (!checkMovableDirection[2])
+					Move(-moveSpeed, 0);
+				break;
+			}
+			case RollDownRight: {
+				if (!checkMovableDirection[1])
+					Move(0, moveSpeed);
+				if (!checkMovableDirection[3])
+					Move(moveSpeed, 0);
+				break;
+			}
+		}
+	}
+
+	else {
+		if (checkKeyInput[0] && !checkMovableDirection[0]) {
+			if (checkKeyInput[2] || checkKeyInput[3]) {
+				SetMoveDiagonalCheck(true);
+				Move(0, -PLAYER_MOVE_SPEED_DIAGONAL);
+			}
+			else {
+				SetMoveDiagonalCheck(false);
+				Move(0, -PLAYER_MOVE_SPEED);
+			}
+		}
+		if (checkKeyInput[1] && !checkMovableDirection[1]) {
+			if (checkKeyInput[2] || checkKeyInput[3]) {
+				SetMoveDiagonalCheck(true);
+				Move(0, PLAYER_MOVE_SPEED_DIAGONAL);
+			}
+			else {
+				SetMoveDiagonalCheck(false);
+				Move(0, PLAYER_MOVE_SPEED);
+			}
+		}
+		if (checkKeyInput[2] && !checkMovableDirection[2]) {
+			if (checkKeyInput[0] || checkKeyInput[1]) {
+				SetMoveDiagonalCheck(true);
+				Move(-PLAYER_MOVE_SPEED_DIAGONAL, 0);
+			}
+			else {
+				SetMoveDiagonalCheck(false);
+				Move(-PLAYER_MOVE_SPEED, 0);
+			}
+		}
+		if (checkKeyInput[3] && !checkMovableDirection[3]) {
+			if (checkKeyInput[0] || checkKeyInput[1]) {
+				SetMoveDiagonalCheck(true);
+				Move(PLAYER_MOVE_SPEED_DIAGONAL, 0);
+			}
+			else {
+				SetMoveDiagonalCheck(false);
+				Move(PLAYER_MOVE_SPEED, 0);
+			}
+		}
+	}
 }
 
 POINT Player::GetCameraRelativePosition() {
@@ -366,6 +521,10 @@ void Player::SetCameraRelativePosition(POINT mousePoint, RECT rt) {
 	cameraRelativePosition = { rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 };
 	gunPosition = { -(long)(sin(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativePosition.x, -(long)(cos(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativePosition.y };
 	guns[0]->SetAngle(angle);
+}
+
+void Player::SetCameraRelativeOffset() {
+	cameraRelativeOffset = { cameraRelativePosition.x - position.x, cameraRelativePosition.y - position.y };
 }
 
 void Player::Roll(bool checkKeyInput[]) {
@@ -432,7 +591,29 @@ Enemy::Enemy(EnemyType enemyType) {
 }
 
 Enemy::Enemy(EnemyType enemyType, int x, int y) {
-
+	enemyType = enemyType;
+	originHP = 3;
+	currentHP = 3;
+	animationIndex = 0;
+	isMoveDiagonal = false;
+	position = { x, y };
+	switch (enemyType) {
+		case BulletJunior: {
+			if (bulletJuniorBmp.IsNull()) {
+				bulletJuniorBmp.Load(L"BulletJunior.bmp");
+				bulletJuniorBmp.SetTransparentColor(RGB(0, 152, 239));
+			}
+			hitboxRect = {
+				position.x - ENEMY_BULLETJUNIOR_SIZE / 2,
+				position.y - ENEMY_BULLETJUNIOR_SIZE / 2,
+				position.x + ENEMY_BULLETJUNIOR_SIZE / 2,
+				position.y + ENEMY_BULLETJUNIOR_SIZE / 2
+			};
+			guns.push_back(new Gun(AutoHandgun, 6));
+			break;
+		}
+	}
+	animationStatus = IdleDown;
 }
 
 Enemy::~Enemy() {
@@ -449,6 +630,9 @@ void Enemy::SetCurrentHp(int value) {
 
 void Enemy::GetDamge(int value) {
 	currentHP -= value;
+	if (currentHP <= 0) {
+		animationStatus = Death;
+	}
 }
 
 void Enemy::GetHeal(int value) {
@@ -477,7 +661,17 @@ void Enemy::SetSpriteBitmap(LPCTSTR fileName) { spriteBitmap.Load(fileName); }
 
 
 void Enemy::PlayAnimation(HDC hDC) {
+	switch (animationStatus) {
+		case Death: {
+			bulletJuniorBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 11 * 25, 25, 25);
+			break;
+		}
 
+		case IdleDown: {
+			bulletJuniorBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
+			break;
+		}
+	}
 }
 
 int Enemy::GetAnimationIndex() {
@@ -489,7 +683,22 @@ void Enemy::SetAnimationIndex(int value) {
 }
 
 void Enemy::UpdateAnimationIndex() {
+	switch (animationStatus) {
+		case Death: {
+			animationIndex = 0;
+			break;
+		}
 
+		case IdleDown: {
+			animationIndex = (animationIndex + 1) % 4;
+			break;
+		}
+		
+		default: {
+			animationIndex = (animationIndex + 1) % 6;
+			break;
+		}
+	}
 }
 
 bool Enemy::IsMoveDiagonal() {
@@ -504,5 +713,60 @@ RECT Enemy::GetHitboxRect() {
 }
 
 Bullet* Enemy::FireGun() {
-	return guns[0]->Shoot(position);
+	return guns[0]->Shoot(position, 0);
+}
+
+void Enemy::AI() {
+	distanceToPlayer = DistanceByPoint(destPosition, position);
+
+	// 일정 이상 접근시 더 이상 접근하지 않음. 제자리 사격
+	if (distanceToPlayer <= ENEMY_STOP_DISTANCE) {
+
+	}
+	// 멀면 길찾기 시작.
+	else {
+		// 좌표 하나라도 겹치면 직선이동
+		if (destPosition.x == position.x) {
+			if (destPosition.y < position.y) {
+				Move(0, -ENEMY_MOVE_SPEED_DEFAULT);
+			}
+			else {
+				Move(0, ENEMY_MOVE_SPEED_DEFAULT);
+			}
+		}
+		else if (destPosition.y == position.y) {
+			if (destPosition.x < position.x) {
+				Move(-ENEMY_MOVE_SPEED_DEFAULT, 0);
+			}
+			else {
+				Move(ENEMY_MOVE_SPEED_DEFAULT, 0);
+			}
+		}
+		// 대각선 이동
+		else {
+			POINT moveMount;
+			moveMount.x = abs(destPosition.x - position.x) < ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL ? abs(destPosition.x - position.x) : ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL;
+			moveMount.y = abs(destPosition.y - position.y) < ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL ? abs(destPosition.y - position.y) : ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL;
+			if (destPosition.x < position.x) {
+				if (destPosition.y < position.y) {
+					Move(-moveMount.x, -moveMount.y);
+				}
+				else {
+					Move(-moveMount.x, moveMount.y);
+				}
+			}
+			else {
+				if (destPosition.y < position.y) {
+					Move(moveMount.x, -moveMount.y);
+				}
+				else {
+					Move(moveMount.x, moveMount.y);
+				}
+			}
+		}
+	}
+}
+
+void Enemy::SetDestination(POINT playerPosition) {
+	destPosition = playerPosition;
 }

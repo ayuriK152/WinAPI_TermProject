@@ -3,8 +3,12 @@
 #include "datas.h"
 #include "values.h"
 #include "Gun.h"
+#include "Utils.h"
 
 using namespace std;
+
+static CImage bulletJuniorBmp;
+static POINT cameraRelativeOffset;
 
 class Creature {
 protected:
@@ -109,9 +113,15 @@ public:
 
 	virtual Bullet* FireGun();
 
+	void AnimationRefresh(bool checkKeyInput[], POINT mousePoint);
+
+	void PositionRefresh(bool checkKeyInput[], bool checkMovableDirection[]);
+
 	POINT GetCameraRelativePosition();
 
 	void SetCameraRelativePosition(POINT position, RECT rt);
+
+	void SetCameraRelativeOffset();
 
 	void Roll(bool checkKeyInput[]);
 
@@ -121,6 +131,9 @@ public:
 class Enemy : Creature {
 private:
 	EnemyType enemyType;
+	POINT destPosition;
+	int distanceToPlayer;
+
 public:
 	Enemy(EnemyType enemyType);
 
@@ -165,4 +178,8 @@ public:
 	virtual RECT GetHitboxRect();
 
 	virtual Bullet* FireGun();
+
+	void AI();
+
+	void SetDestination(POINT playerPosition);
 };

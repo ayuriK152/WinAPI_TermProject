@@ -13,7 +13,7 @@ void Menu::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 				cursor.SetTransparentColor(RGB(0, 255, 0));
 			}
 
-			SetTimer(hWnd, 1001, POSITION_REFRESH_DURATION, NULL);
+			SetTimer(hWnd, 1000, POSITION_REFRESH_DURATION, NULL);
 			break;
 		}
 
@@ -40,7 +40,7 @@ void Menu::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 		case WM_CHAR: {
 			if (wParam == 'a') {
 				*gameScene = Ingame;
-				KillTimer(hWnd, 1001);
+				KillTimer(hWnd, 1000);
 				SendMessage(hWnd, WM_GAMESCENECHANGED, wParam, lParam);
 			}
 			break;

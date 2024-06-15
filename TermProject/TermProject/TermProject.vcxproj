@@ -134,6 +134,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainmenuManager.cpp" />
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
@@ -144,6 +145,7 @@
     <ClInclude Include="MainmenuManager.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Utils.h" />
     <ClInclude Include="values.h" />
   </ItemGroup>
   <ItemGroup>

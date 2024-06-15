@@ -1,171 +1,36 @@
 #include "IngameManager.h"
 
-void CALLBACK Game::AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+void CALLBACK Game::PlayerAnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	if (player->IsRolling()) {
 		player->UpdateAnimationIndex();
 
 		if (!player->IsRolling()) {
-			KillTimer(hWnd, 1000);
-			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
+			KillTimer(hWnd, ANIMATION_REFRESH_ID_PLAYER);
+			SetTimer(hWnd, ANIMATION_REFRESH_ID_PLAYER, ANIMATION_REFRESH_DURATION, PlayerAnimationRefresh);
 		}
 		return;
 	}
 
-	AnimationStatus pastStatus = player->GetMoveStatus();
-	double tanValue = TanByPoint(player->GetCameraRelativePosition(), mousePoint);
-
-	if (mousePoint.x < player->GetCameraRelativePosition().x && (tanValue >= TAN_22_5 && tanValue <= TAN_67_5)) {
-		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
-			player->SetMoveStatus(IdleUpLeft);
-		else
-			player->SetMoveStatus(MoveUpLeft);
-	}
-	else if (mousePoint.x > player->GetCameraRelativePosition().x && (tanValue <= -TAN_22_5 && tanValue >= -TAN_67_5)) {
-		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
-			player->SetMoveStatus(IdleUpRight);
-		else
-			player->SetMoveStatus(MoveUpRight);
-	}
-	else if (mousePoint.x < player->GetCameraRelativePosition().x && ((tanValue <= TAN_22_5 && tanValue >= 0) || tanValue >= -TAN_67_5 && tanValue <= 0)) {
-		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
-			player->SetMoveStatus(IdleLeft);
-		else
-			player->SetMoveStatus(MoveLeft);
-	}
-	else if (mousePoint.x > player->GetCameraRelativePosition().x && ((tanValue >= -TAN_22_5 && tanValue <= 0) || tanValue <= TAN_67_5 && tanValue >= 0)) {
-		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
-			player->SetMoveStatus(IdleRight);
-		else
-			player->SetMoveStatus(MoveRight);
-	}
-	else if (mousePoint.y < player->GetCameraRelativePosition().y) {
-		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
-			player->SetMoveStatus(IdleUp);
-		else
-			player->SetMoveStatus(MoveUp);
-	}
-	else if (mousePoint.y > player->GetCameraRelativePosition().y) {
-		if (!checkKeyInput[0] && !checkKeyInput[1] && !checkKeyInput[2] && !checkKeyInput[3])
-			player->SetMoveStatus(IdleDown);
-		else
-			player->SetMoveStatus(MoveDown);
-	}
-	if (pastStatus != player->GetMoveStatus()) {
-		player->SetAnimationIndex(0);
-	}
-	player->UpdateAnimationIndex();
+	player->AnimationRefresh(checkKeyInput, mousePoint);
 }
 
 void CALLBACK Game::PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
 	centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
-
+	player->SetCameraRelativeOffset();
 	map->CheckMovableDirection(checkMovableDirection, player->GetPosition(), player->GetHitboxRect());
 
-	if (player->IsRolling()) {
-		int moveSpeed = 0;
-		if (player->GetAnimationIndex() > 6)
-			moveSpeed = player->IsMoveDiagonal() ? PLAYER_ROLL_END_SPEED_DIAGONAL : PLAYER_ROLL_END_SPEED;
-		else if (player->GetAnimationIndex() > 4)
-			moveSpeed = player->IsMoveDiagonal() ? PLAYER_ROLL_ING_SPEED_DIAGONAL : PLAYER_ROLL_ING_SPEED;
-		else
-			moveSpeed = player->IsMoveDiagonal() ? PLAYER_ROLL_START_SPEED_DIAGONAL : PLAYER_ROLL_START_SPEED;
+	player->PositionRefresh(checkKeyInput, checkMovableDirection);
 
-		switch (player->GetMoveStatus()) {
-			case RollUp: {
-				if (!checkMovableDirection[0])
-					player->Move(0, -moveSpeed);
-				break;
-			}
-			case RollDown: {
-				if (!checkMovableDirection[1])
-					player->Move(0, moveSpeed);
-				break;
-			}
-			case RollLeft: {
-				if (!checkMovableDirection[2])
-					player->Move(-moveSpeed, 0);
-				break;
-			}
-			case RollRight: {
-				if (!checkMovableDirection[3])
-					player->Move(moveSpeed, 0);
-				break;
-			}
-			case RollUpLeft: {
-				if (!checkMovableDirection[0])
-					player->Move(0, -moveSpeed);
-				if (!checkMovableDirection[2])
-					player->Move(-moveSpeed, 0);
-				break;
-			}
-			case RollUpRight: {
-				if (!checkMovableDirection[0])
-					player->Move(0, -moveSpeed);
-				if (!checkMovableDirection[3])
-					player->Move(moveSpeed, 0);
-				break;
-			}
-			case RollDownLeft: {
-				if (!checkMovableDirection[1])
-					player->Move(0, moveSpeed);
-				if (!checkMovableDirection[2])
-					player->Move(-moveSpeed, 0);
-				break;
-			}
-			case RollDownRight: {
-				if (!checkMovableDirection[1])
-					player->Move(0, moveSpeed);
-				if (!checkMovableDirection[3])
-					player->Move(moveSpeed, 0);
-				break;
-			}
-		}
-		InvalidateRect(hWnd, NULL, FALSE);
-	}
-
-	else {
-		if (checkKeyInput[0] && !checkMovableDirection[0]) {
-			if (checkKeyInput[2] || checkKeyInput[3]) {
-				player->SetMoveDiagonalCheck(true);
-				player->Move(0, -PLAYER_MOVE_SPEED_DIAGONAL);
-			}
-			else {
-				player->SetMoveDiagonalCheck(false);
-				player->Move(0, -PLAYER_MOVE_SPEED);
-			}
-		}
-		if (checkKeyInput[1] && !checkMovableDirection[1]) {
-			if (checkKeyInput[2] || checkKeyInput[3]) {
-				player->SetMoveDiagonalCheck(true);
-				player->Move(0, PLAYER_MOVE_SPEED_DIAGONAL);
-			}
-			else {
-				player->SetMoveDiagonalCheck(false);
-				player->Move(0, PLAYER_MOVE_SPEED);
-			}
-		}
-		if (checkKeyInput[2] && !checkMovableDirection[2]) {
-			if (checkKeyInput[0] || checkKeyInput[1]) {
-				player->SetMoveDiagonalCheck(true);
-				player->Move(-PLAYER_MOVE_SPEED_DIAGONAL, 0);
-			}
-			else {
-				player->SetMoveDiagonalCheck(false);
-				player->Move(-PLAYER_MOVE_SPEED, 0);
-			}
-		}
-		if (checkKeyInput[3] && !checkMovableDirection[3]) {
-			if (checkKeyInput[0] || checkKeyInput[1]) {
-				player->SetMoveDiagonalCheck(true);
-				player->Move(PLAYER_MOVE_SPEED_DIAGONAL, 0);
-			}
-			else {
-				player->SetMoveDiagonalCheck(false);
-				player->Move(PLAYER_MOVE_SPEED, 0);
-			}
-		}
-	}
 	InvalidateRect(hWnd, NULL, FALSE);
+}
+
+void CALLBACK Game::EnemyAnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	AnimationStatus pastStatus = enemys[idEvent - ANIMATION_REFRESH_ID_ENEMY]->GetMoveStatus();
+	enemys[idEvent - ANIMATION_REFRESH_ID_ENEMY]->UpdateAnimationIndex();
+}
+
+void CALLBACK Game::EnemyAIRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime) {
+	enemys[idEvent - AI_REFRESH_ID_ENEMY]->SetDestination(player->GetPosition());
 }
 
 void Game::PlayAnimation(HDC hDC) {
@@ -175,10 +40,29 @@ void Game::PlayAnimation(HDC hDC) {
 
 	map->DrawFloor(mDC, centerOffset, rt);
 
+	for (int i = 0; i < enemys.size(); i++) {
+		enemys[i]->PlayAnimation(mDC);
+		if (enemys[i]->GetMoveStatus() == Death)
+			continue;
+		for (int j = 0; j < bullets.size(); j++) {
+			if (IsCollide(enemys[i]->GetHitboxRect(), bullets[j]->GetHitboxRect())) {
+				enemys[i]->GetDamge(1);
+				delete bullets[j];
+				bullets.erase(bullets.begin() + j);
+				j--;
+				break;
+			}
+		}
+		enemys[i]->AI();
+	}
+
 	player->PlayAnimation(mDC);
+
 	for (int i = 0; i < bullets.size(); i++) {
 		bullets[i]->Move();
-		if (map->IsCollideWall(bullets[i]->GetHitboxRect())) {
+		bool isCollide = false;
+		if (map->IsCollideWall(bullets[i]->GetHitboxRect()) || isCollide) {
+			delete bullets[i];
 			bullets.erase(bullets.begin() + i);
 			i -= 1;
 		}
@@ -206,14 +90,6 @@ void Game::PlayAnimation(HDC hDC) {
 	DeleteDC(mDC);
 }
 
-double Game::DistanceByPoint(POINT p1, POINT p2) {
-	return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
-}
-
-double Game::TanByPoint(POINT p1, POINT p2) {
-	return (double)(p2.y - p1.y) / (p2.x - p1.x);
-}
-
 void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* gameScene) {
 	srand((unsigned int)time(NULL));
 
@@ -227,10 +103,14 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			heart.Load(L"heart.bmp");
 			heart.SetTransparentColor(RGB(0, 255, 0));
 
-			animationRefresh = AnimationRefresh;
-			positionRefresh = PositionRefresh;
-			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION, AnimationRefresh);
-			SetTimer(hWnd, 1001, POSITION_REFRESH_DURATION, PositionRefresh);
+			enemys.push_back(new Enemy(BulletJunior, 200, 200));
+
+			SetTimer(hWnd, POSITION_REFRESH_ID, POSITION_REFRESH_DURATION, PositionRefresh);
+			SetTimer(hWnd, ANIMATION_REFRESH_ID_PLAYER, ANIMATION_REFRESH_DURATION, PlayerAnimationRefresh);
+			for (int i = 0; i < enemys.size(); i++) {
+				SetTimer(hWnd, ANIMATION_REFRESH_ID_ENEMY + i, ANIMATION_REFRESH_DURATION_ENEMY, EnemyAnimationRefresh);
+				SetTimer(hWnd, AI_REFRESH_ID_ENEMY + i, AI_REFRESH_REFRESH_DURATION, EnemyAIRefresh);
+			}
 
 			if (cursor.IsNull()) {
 				cursor.Load(L"Cursor.bmp");
@@ -307,8 +187,8 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			if (player->IsRolling())
 				break;
 			player->Roll(checkKeyInput);
-			KillTimer(hWnd, 1000);
-			SetTimer(hWnd, 1000, ANIMATION_REFRESH_DURATION_PLAYER_ROLL, AnimationRefresh);
+			KillTimer(hWnd, ANIMATION_REFRESH_ID_PLAYER);
+			SetTimer(hWnd, ANIMATION_REFRESH_ID_PLAYER, ANIMATION_REFRESH_DURATION_PLAYER_ROLL, PlayerAnimationRefresh);
 			break;
 		}
 

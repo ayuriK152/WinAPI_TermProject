@@ -25,7 +25,7 @@ public:
 
 	void Draw(HDC hDC, POINT offset);
 
-	Bullet* Shoot(POINT playerPosition);
+	Bullet* Shoot(POINT shooterPosition, int decreaseMount);
 
 	void Reload();
 

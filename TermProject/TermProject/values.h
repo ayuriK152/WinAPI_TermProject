@@ -1,13 +1,23 @@
 #pragma once
 
-static const int ANIMATION_REFRESH_DURATION = 100;
-static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
-static const int POSITION_REFRESH_DURATION = 10;
-static const int CREATURE_GUN_HOLDING_DISTANCE = 40;
+static const int POSITION_REFRESH_ID			= 1000;
+static const int ANIMATION_REFRESH_ID_PLAYER	= 1001;
+static const int ANIMATION_REFRESH_ID_ENEMY		= 2001;
+static const int AI_REFRESH_ID_ENEMY			= 3001;
 
-static const int CURSOR_SIZE = 33;
-static const int PLAYER_CHARACTER_SIZE	= 75;
-static const int PLAYER_HEART_SIZE		= 17;
+static const int ANIMATION_REFRESH_DURATION				= 100;
+static const int ANIMATION_REFRESH_DURATION_ENEMY		= 150;
+static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
+static const int POSITION_REFRESH_DURATION				= 10;
+static const int AI_REFRESH_REFRESH_DURATION			= 250;
+
+static const int CREATURE_GUN_HOLDING_DISTANCE	= 40;
+static const int ENEMY_STOP_DISTANCE			= 300;
+
+static const int CURSOR_SIZE				= 33;
+static const int PLAYER_CHARACTER_SIZE		= 75;
+static const int ENEMY_BULLETJUNIOR_SIZE	= 75;
+static const int PLAYER_HEART_SIZE			= 17;
 
 static const int PLAYER_MOVE_SPEED					= 8;
 static const int PLAYER_MOVE_SPEED_DIAGONAL			= 6;
@@ -17,6 +27,9 @@ static const int PLAYER_ROLL_END_SPEED				= 6;
 static const int PLAYER_ROLL_START_SPEED_DIAGONAL	= 8;
 static const int PLAYER_ROLL_ING_SPEED_DIAGONAL		= 2;
 static const int PLAYER_ROLL_END_SPEED_DIAGONAL		= 3;
+
+static const int ENEMY_MOVE_SPEED_DEFAULT			= 3;
+static const int ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL	= 2;
 
 static const POINT TILEMAP_OFFSET_INITPLACE_START	= { 0, 18 };
 static const POINT TILEMAP_OFFSET_INITPLACE_END		= { 360, 342 };

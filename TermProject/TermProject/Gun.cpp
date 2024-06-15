@@ -43,8 +43,9 @@ void Gun::Draw(HDC hDC, POINT offset) {
 	DeleteDC(mDC);
 }
 
-Bullet* Gun::Shoot(POINT playerPosition) {
-	return new Bullet({ shootPos.x + playerPosition.x, shootPos.y + playerPosition.y }, { 45, 45 }, 25, angle, false);
+Bullet* Gun::Shoot(POINT shooterPosition, int decreaseMount) {
+	currentBulletMount -= decreaseMount;
+	return new Bullet({ shootPos.x + shooterPosition.x, shootPos.y + shooterPosition.y }, { 45, 45 }, 25, angle, false);
 }
 
 void Gun::Reload() {

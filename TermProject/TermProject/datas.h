@@ -8,6 +8,7 @@ enum GameScene {
 };
 
 enum AnimationStatus {
+	Death,
 	IdleUp,
 	IdleDown,
 	IdleLeft,

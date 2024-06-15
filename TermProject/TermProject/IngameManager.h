@@ -12,6 +12,7 @@
 #include "Bullet.h"
 #include "values.h"
 #include "Map.h"
+#include "Utils.h"
 
 namespace Game {
 	static HDC hDC, mDC;
@@ -22,24 +23,23 @@ namespace Game {
 	static HBITMAP hBitmap;
 
 	static Player* player;
+	static vector<Enemy*> enemys;
 	static vector<Bullet*> bullets;
 	static POINT mousePoint, centerOffset;
 	static CImage cursor, heart, bullet;
 	static Map* map;
 	static bool checkKeyInput[4], checkMovableDirection[4];
 	static int currentMapIdx;
-	static void (CALLBACK* animationRefresh)(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
-	static void (CALLBACK* positionRefresh)(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 	void PlayAnimation(HDC hDC);
 
-	double DistanceByPoint(POINT p1, POINT p2);
-
-	double TanByPoint(POINT p1, POINT p2);
-
 	void Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* gameScene);
 
-	void CALLBACK AnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+	void CALLBACK PlayerAnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 
 	void CALLBACK PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+
+	void CALLBACK EnemyAnimationRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
+
+	void CALLBACK EnemyAIRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime);
 }
