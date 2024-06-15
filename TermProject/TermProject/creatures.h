@@ -65,6 +65,7 @@ public:
 
 class Player : Creature {
 private:
+	CImage reloadBar;
 	POINT cameraRelativePosition;
 	bool isRoll;
 	int currentGunIdx;
@@ -131,6 +132,10 @@ public:
 	int GetCurrentGunBulletAmount();
 
 	void ReloadCurrentGun();
+
+	bool IsCurrentGunCanReload();
+
+	bool IsCurrentGunOnReload();
 };
 
 class Enemy : Creature {

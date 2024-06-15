@@ -31,6 +31,14 @@ public:
 
 	int GetCurrentBulletMount();
 
+	int GetCurrentReloadStatus();
+
+	void IncreaseReloadCount();
+
+	bool IsGunOnReLoad();
+	
+	bool IsGunCanReload();
+
 	void Reload();
 
 	void Rotate(POINT centerPos);

@@ -158,8 +158,10 @@
     <Image Include="bullet.bmp" />
     <Image Include="BulletJunior.bmp" />
     <Image Include="Cursor.bmp" />
+    <Image Include="EnemyBullet.bmp" />
     <Image Include="heart.bmp" />
     <Image Include="MainmenuBG.bmp" />
+    <Image Include="ReloadBar.bmp" />
     <Image Include="The Pilot.bmp" />
     <Image Include="TileMap.bmp" />
   </ItemGroup>

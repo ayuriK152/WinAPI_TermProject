@@ -41,17 +41,6 @@ void Gun::Draw(HDC hDC, POINT offset) {
 	sourceBitmap.PlgBlt(mDC, renderPoints, 0, 0, sourceBitmap.GetWidth(), sourceBitmap.GetHeight());
 	TransparentBlt(hDC, 0, 0, 1920, 1080, mDC, 0, 0, 1920, 1080, RGB(0, 255, 0));
 
-	if (isOnReload) {
-		if (reloadDelay < PLAYER_GUN_RELOAD_TIME) {
-			reloadDelay += 1;
-		}
-		else {
-			isOnReload = false;
-			currentBulletMount = originBulletMount;
-			reloadDelay = 0;
-		}
-	}
-
 	DeleteObject(hBrush);
 	DeleteObject(hBitmap);
 	DeleteDC(mDC);
@@ -64,6 +53,31 @@ Bullet* Gun::Shoot(POINT shooterPosition, int decreaseMount) {
 
 int Gun::GetCurrentBulletMount() {
 	return currentBulletMount;
+}
+
+int Gun::GetCurrentReloadStatus() {
+	return reloadDelay;
+}
+
+void Gun::IncreaseReloadCount() {
+	if (reloadDelay < PLAYER_GUN_RELOAD_TIME) {
+		reloadDelay += 1;
+	}
+	else {
+		isOnReload = false;
+		currentBulletMount = originBulletMount;
+		reloadDelay = 0;
+	}
+}
+
+bool Gun::IsGunOnReLoad() {
+	return isOnReload;
+}
+
+bool Gun::IsGunCanReload() {
+	if (currentBulletMount < originBulletMount)
+		return true;
+	return false;
 }
 
 void Gun::Reload() {

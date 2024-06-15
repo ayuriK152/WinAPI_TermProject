@@ -108,5 +108,11 @@
     <Image Include="MainmenuBG.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="ReloadBar.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="EnemyBullet.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -153,6 +153,12 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			else if (wParam == 'd' || wParam == 'D') {
 				checkKeyInput[3] = true;
 			}
+			if (wParam == 'r' || wParam == 'R') {
+				if (player->IsCurrentGunCanReload()) {
+					player->ReloadCurrentGun();
+					break;
+				}
+			}
 			break;
 		}
 
@@ -173,6 +179,9 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 		}
 
 		case WM_LBUTTONDOWN: {
+			if (player->IsCurrentGunOnReload()) {
+				break;
+			}
 			if (player->GetCurrentGunBulletAmount() == 0) {
 				player->ReloadCurrentGun();
 				break;

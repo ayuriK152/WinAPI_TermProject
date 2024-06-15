@@ -18,6 +18,7 @@ Player::Player() {
 	guns.push_back(new Gun(AutoHandgun, 6));
 	currentGunIdx = 0;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
+	reloadBar.Load(L"ReloadBar.bmp");
 }
 
 Player::Player(int x, int y) {
@@ -36,6 +37,7 @@ Player::Player(int x, int y) {
 	guns.push_back(new Gun(AutoHandgun, 6));
 	currentGunIdx = 0;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
+	reloadBar.Load(L"ReloadBar.bmp");
 }
 
 Player::~Player() {
@@ -237,6 +239,13 @@ void Player::PlayAnimation(HDC hDC) {
 		case RollDownRight: {
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_ROLL_RIGHT.y, 25, 25);
 			break;
+		}
+	}
+
+	if (guns[currentGunIdx]->IsGunOnReLoad()) {
+		guns[currentGunIdx]->IncreaseReloadCount();
+		if (guns[currentGunIdx]->GetCurrentReloadStatus() / 2 >= 1) {
+			reloadBar.Draw(hDC, cameraRelativePosition.x - 41, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2 - 29, guns[currentGunIdx]->GetCurrentReloadStatus() / 2 * 3, 21, 0, 0, guns[currentGunIdx]->GetCurrentReloadStatus() / 2, 7);
 		}
 	}
 }
@@ -569,6 +578,14 @@ int Player::GetCurrentGunBulletAmount() {
 
 void Player::ReloadCurrentGun() {
 	return guns[currentGunIdx]->Reload();
+}
+
+bool Player::IsCurrentGunCanReload() {
+	return guns[currentGunIdx]->IsGunCanReload();
+}
+
+bool Player::IsCurrentGunOnReload() {
+	return guns[currentGunIdx]->IsGunOnReLoad();
 }
 
 Enemy::Enemy(EnemyType enemyType) {
