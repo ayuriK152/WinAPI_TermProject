@@ -16,6 +16,7 @@ Player::Player() {
 	};
 	animationStatus = IdleDown;
 	guns.push_back(new Gun(AutoHandgun, 6));
+	currentGunIdx = 0;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
 }
 
@@ -33,6 +34,7 @@ Player::Player(int x, int y) {
 	};
 	animationStatus = IdleDown;
 	guns.push_back(new Gun(AutoHandgun, 6));
+	currentGunIdx = 0;
 	spriteBitmap.SetTransparentColor(RGB(144, 187, 187));
 }
 
@@ -82,13 +84,13 @@ void Player::SetSpriteBitmap(LPCTSTR fileName) { spriteBitmap.Load(fileName); }
 void Player::PlayAnimation(HDC hDC) {
 	switch (animationStatus) {
 		case IdleUp: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UP.y, 25, 25);
 			break;
 		}
 		case IdleDown: {
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.y, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			break;
 		}
 		case IdleLeft: {
@@ -101,17 +103,17 @@ void Player::PlayAnimation(HDC hDC) {
 				}
 			}
 			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			DeleteObject(temp);
 			break;
 		}
 		case IdleRight: {
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.y, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			break;
 		}
 		case IdleUpLeft: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			CImage temp;
 			temp.Create(25, 25, 32, 0);
 			temp.SetTransparentColor(RGB(144, 187, 187));
@@ -125,18 +127,18 @@ void Player::PlayAnimation(HDC hDC) {
 			break;
 		}
 		case IdleUpRight: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.y, 25, 25);
 			break;
 		}
 		case MoveUp: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UP.y, 25, 25);
 			break;
 		}
 		case MoveDown: {
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.y, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			break;
 		}
 		case MoveLeft: {
@@ -149,17 +151,17 @@ void Player::PlayAnimation(HDC hDC) {
 				}
 			}
 			temp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 0, 0, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			DeleteObject(temp);
 			break;
 		}
 		case MoveRight: {
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.y, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			break;
 		}
 		case MoveUpLeft: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			CImage temp;
 			temp.Create(25, 25, 32, 0);
 			temp.SetTransparentColor(RGB(144, 187, 187));
@@ -173,7 +175,7 @@ void Player::PlayAnimation(HDC hDC) {
 			break;
 		}
 		case MoveUpRight: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition);
 			spriteBitmap.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.y, 25, 25);
 			break;
 		}
@@ -357,7 +359,7 @@ RECT Player::GetHitboxRect() {
 }
 
 Bullet* Player::FireGun() {
-	return guns[0]->Shoot({ (gunPosition.x - cameraRelativePosition.x) + position.x, (gunPosition.y - cameraRelativePosition.y) + position.y }, 1);
+	return guns[currentGunIdx]->Shoot({ (gunPosition.x - cameraRelativePosition.x) + position.x, (gunPosition.y - cameraRelativePosition.y) + position.y }, 1);
 }
 
 void Player::AnimationRefresh(bool checkKeyInput[], POINT mousePoint) {
@@ -520,7 +522,7 @@ void Player::SetCameraRelativePosition(POINT mousePoint, RECT rt) {
 	angle = atan2(cameraRelativePosition.x - mousePoint.x, cameraRelativePosition.y - mousePoint.y);
 	cameraRelativePosition = { rt.right / 2 - (mousePoint.x - rt.right / 2) * 3 / 7, rt.bottom / 2 - (mousePoint.y - rt.bottom / 2) * 2 / 3 };
 	gunPosition = { -(long)(sin(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativePosition.x, -(long)(cos(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativePosition.y };
-	guns[0]->SetAngle(angle);
+	guns[currentGunIdx]->SetAngle(angle);
 }
 
 void Player::SetCameraRelativeOffset() {
@@ -559,6 +561,14 @@ void Player::Roll(bool checkKeyInput[]) {
 
 bool Player::IsRolling() {
 	return isRoll;
+}
+
+int Player::GetCurrentGunBulletAmount() {
+	return guns[currentGunIdx]->GetCurrentBulletMount();
+}
+
+void Player::ReloadCurrentGun() {
+	return guns[currentGunIdx]->Reload();
 }
 
 Enemy::Enemy(EnemyType enemyType) {

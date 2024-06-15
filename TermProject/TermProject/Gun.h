@@ -12,9 +12,11 @@ private:
 	POINT shootPosOffset, shootPos;
 	POINT renderPoints[3];
 	bool isFlip;
+	bool isOnReload;
 	double angle;
 	int originBulletMount;
 	int currentBulletMount;
+	int reloadDelay;
 
 public:
 	Gun(GunType gunType, int originBulletMount);
@@ -26,6 +28,8 @@ public:
 	void Draw(HDC hDC, POINT offset);
 
 	Bullet* Shoot(POINT shooterPosition, int decreaseMount);
+
+	int GetCurrentBulletMount();
 
 	void Reload();
 

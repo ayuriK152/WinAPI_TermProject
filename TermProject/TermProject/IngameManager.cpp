@@ -173,6 +173,10 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 		}
 
 		case WM_LBUTTONDOWN: {
+			if (player->GetCurrentGunBulletAmount() == 0) {
+				player->ReloadCurrentGun();
+				break;
+			}
 			mousePoint = { LOWORD(lParam), HIWORD(lParam) };
 			bullets.push_back(player->FireGun());
 			break;

@@ -67,6 +67,7 @@ class Player : Creature {
 private:
 	POINT cameraRelativePosition;
 	bool isRoll;
+	int currentGunIdx;
 
 public:
 	Player();
@@ -126,6 +127,10 @@ public:
 	void Roll(bool checkKeyInput[]);
 
 	bool IsRolling();
+
+	int GetCurrentGunBulletAmount();
+
+	void ReloadCurrentGun();
 };
 
 class Enemy : Creature {

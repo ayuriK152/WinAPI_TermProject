@@ -2,8 +2,11 @@
 
 Gun::Gun(GunType gunType, int originBulletMount) {
 	this->gunType = gunType;
-	this->isFlip = false;
 	this->originBulletMount = originBulletMount;
+	isFlip = false;
+	isOnReload = false;
+	reloadDelay = 0;
+	currentBulletMount = originBulletMount;
 
 	switch (gunType) {
 		case AutoHandgun: {
@@ -38,6 +41,17 @@ void Gun::Draw(HDC hDC, POINT offset) {
 	sourceBitmap.PlgBlt(mDC, renderPoints, 0, 0, sourceBitmap.GetWidth(), sourceBitmap.GetHeight());
 	TransparentBlt(hDC, 0, 0, 1920, 1080, mDC, 0, 0, 1920, 1080, RGB(0, 255, 0));
 
+	if (isOnReload) {
+		if (reloadDelay < PLAYER_GUN_RELOAD_TIME) {
+			reloadDelay += 1;
+		}
+		else {
+			isOnReload = false;
+			currentBulletMount = originBulletMount;
+			reloadDelay = 0;
+		}
+	}
+
 	DeleteObject(hBrush);
 	DeleteObject(hBitmap);
 	DeleteDC(mDC);
@@ -48,8 +62,13 @@ Bullet* Gun::Shoot(POINT shooterPosition, int decreaseMount) {
 	return new Bullet({ shootPos.x + shooterPosition.x, shootPos.y + shooterPosition.y }, { 45, 45 }, 25, angle, false);
 }
 
-void Gun::Reload() {
+int Gun::GetCurrentBulletMount() {
+	return currentBulletMount;
+}
 
+void Gun::Reload() {
+	if (!isOnReload)
+		isOnReload = true;
 }
 
 void Gun::Rotate(POINT offset) {

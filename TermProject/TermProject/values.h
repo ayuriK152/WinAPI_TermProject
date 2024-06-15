@@ -19,6 +19,8 @@ static const int PLAYER_CHARACTER_SIZE		= 75;
 static const int ENEMY_BULLETJUNIOR_SIZE	= 75;
 static const int PLAYER_HEART_SIZE			= 17;
 
+static const int PLAYER_GUN_RELOAD_TIME		= 50;
+
 static const int PLAYER_MOVE_SPEED					= 8;
 static const int PLAYER_MOVE_SPEED_DIAGONAL			= 6;
 static const int PLAYER_ROLL_START_SPEED			= 12;
