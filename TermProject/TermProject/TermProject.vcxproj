@@ -155,6 +155,7 @@
     <Image Include="AutoHandgun.bmp" />
     <Image Include="AutoHandgunMask.bmp" />
     <Image Include="AutoHandgun.png" />
+    <Image Include="Boss.bmp" />
     <Image Include="bullet.bmp" />
     <Image Include="BulletJunior.bmp" />
     <Image Include="Cursor.bmp" />

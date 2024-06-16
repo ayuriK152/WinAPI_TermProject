@@ -10,6 +10,7 @@ using namespace std;
 static CImage bulletJuniorSpriteBmp;
 static POINT cameraRelativeOffset;
 static CImage playerSpriteBmp;
+static CImage bossSpriteBmp;
 
 class Creature {
 protected:

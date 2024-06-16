@@ -16,7 +16,8 @@ Player::Player() {
 		position.x + (PLAYER_CHARACTER_SIZE / 2 - 14),
 		position.y + PLAYER_CHARACTER_SIZE / 2 
 	};
-	playerSpriteBmp.Load(L"The Pilot.bmp");
+	if (playerSpriteBmp.IsNull())
+		playerSpriteBmp.Load(L"The Pilot.bmp");
 	playerSpriteBmp.SetTransparentColor(RGB(144, 187, 187));
 	leftAnimationBmp.Create(300, 150, 32, 0);
 	leftAnimationBmp.SetTransparentColor(RGB(144, 187, 187));
@@ -54,7 +55,8 @@ Player::Player() {
 	guns.push_back(new Gun(AutoHandgun, 6));
 	currentGunIdx = 0;
 	playerSpriteBmp.SetTransparentColor(RGB(144, 187, 187));
-	reloadBar.Load(L"ReloadBar.bmp");
+	if (reloadBar.IsNull())
+		reloadBar.Load(L"ReloadBar.bmp");
 }
 
 Player::Player(int x, int y) {
@@ -71,7 +73,8 @@ Player::Player(int x, int y) {
 		position.x + PLAYER_CHARACTER_SIZE / 2,
 		position.y + PLAYER_CHARACTER_SIZE / 2
 	};
-	playerSpriteBmp.Load(L"The Pilot.bmp");
+	if (playerSpriteBmp.IsNull())
+		playerSpriteBmp.Load(L"The Pilot.bmp");
 	playerSpriteBmp.SetTransparentColor(RGB(144, 187, 187));
 	leftAnimationBmp.Create(300, 150, 32, 0);
 	leftAnimationBmp.SetTransparentColor(RGB(144, 187, 187));
@@ -108,7 +111,8 @@ Player::Player(int x, int y) {
 	animationStatus = IdleDown;
 	guns.push_back(new Gun(AutoHandgun, 6));
 	currentGunIdx = 0;
-	reloadBar.Load(L"ReloadBar.bmp");
+	if (reloadBar.IsNull())
+		reloadBar.Load(L"ReloadBar.bmp");
 }
 
 Player::~Player() {
@@ -660,6 +664,11 @@ Enemy::Enemy(EnemyType enemyType, int mapIndex) {
 			originHP = ENEMY_HP_SHOTGUNBLUE;
 			break;
 		}
+
+		case Boss: {
+			originHP = 50;
+			break;
+		}
 	}
 	currentHP = originHP;
 	animationIndex = 0;
@@ -676,6 +685,20 @@ Enemy::Enemy(EnemyType enemyType, int mapIndex) {
 				position.y - ENEMY_BULLETJUNIOR_SIZE / 2,
 				position.x + ENEMY_BULLETJUNIOR_SIZE / 2,
 				position.y + ENEMY_BULLETJUNIOR_SIZE / 2
+			};
+			guns.push_back(new Gun(AutoHandgun, 6));
+			break;
+		}
+		case Boss: {
+			if (bossSpriteBmp.IsNull()) {
+				bossSpriteBmp.Load(L"Boss.bmp");
+				bossSpriteBmp.SetTransparentColor(RGB(0, 152, 239));
+			}
+			hitboxRect = {
+				position.x - 150 / 2,
+				position.y - 189 / 2,
+				position.x + 150 / 2,
+				position.y + 189 / 2
 			};
 			guns.push_back(new Gun(AutoHandgun, 6));
 			break;
@@ -711,6 +734,11 @@ Enemy::Enemy(EnemyType enemyType, int x, int y, int mapIndex) {
 			originHP = ENEMY_HP_SHOTGUNBLUE;
 			break;
 		}
+
+		case Boss: {
+			originHP = 50;
+			break;
+		}
 	}
 	currentHP = originHP;
 	animationIndex = 0;
@@ -727,6 +755,20 @@ Enemy::Enemy(EnemyType enemyType, int x, int y, int mapIndex) {
 				position.y - ENEMY_BULLETJUNIOR_SIZE / 2,
 				position.x + ENEMY_BULLETJUNIOR_SIZE / 2,
 				position.y + ENEMY_BULLETJUNIOR_SIZE / 2
+			};
+			guns.push_back(new Gun(AutoHandgun, 6));
+			break;
+		}
+		case Boss: {
+			if (bossSpriteBmp.IsNull()) {
+				bossSpriteBmp.Load(L"Boss.bmp");
+				bossSpriteBmp.SetTransparentColor(RGB(0, 152, 239));
+			}
+			hitboxRect = {
+				position.x - 150 / 2,
+				position.y - 189 / 2,
+				position.x + 150 / 2,
+				position.y + 189 / 2
 			};
 			guns.push_back(new Gun(AutoHandgun, 6));
 			break;
@@ -785,33 +827,47 @@ void Enemy::SetMoveStatus(AnimationStatus status) { animationStatus = status; }
 
 
 void Enemy::PlayAnimation(HDC hDC) {
-	switch (animationStatus) {
-		case Death: {
-			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 11 * 25, 25, 25);
+	switch (enemyType) {
+		case BulletJunior: {
+			switch (animationStatus) {
+				case Death: {
+					bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 11 * 25, 25, 25);
+					break;
+				}
+
+				case IdleUp: {
+					guns[0]->Draw(hDC, gunPosition, false);
+					bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex + 100, 0, 25, 25);
+					break;
+				}
+
+				case IdleDown: {
+					bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
+					guns[0]->Draw(hDC, gunPosition, false);
+					break;
+				}
+
+				case MoveRight: {
+					moveRightBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
+					guns[0]->Draw(hDC, gunPosition, false);
+					break;
+				}
+
+				case MoveLeft: {
+					bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 25, 25, 25);
+					guns[0]->Draw(hDC, gunPosition, false);
+					break;
+				}
+			}
 			break;
 		}
-
-		case IdleUp: {
-			guns[0]->Draw(hDC, gunPosition, false);
-			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex + 100, 0, 25, 25);
-			break;
-		}
-
-		case IdleDown: {
-			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
-			guns[0]->Draw(hDC, gunPosition, false);
-			break;
-		}
-
-		case MoveRight: {
-			moveRightBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
-			guns[0]->Draw(hDC, gunPosition, false);
-			break;
-		}
-
-		case MoveLeft: {
-			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 25, 25, 25);
-			guns[0]->Draw(hDC, gunPosition, false);
+		case Boss: {
+			switch (animationStatus) {
+				default: {
+					bossSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - 150 / 2, (cameraRelativeOffset.y + position.y) - 189 / 2, 150, 189, 0, 0, 50, 63);
+					break;
+				}
+			}
 			break;
 		}
 	}

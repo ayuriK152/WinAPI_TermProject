@@ -56,7 +56,7 @@ Room::Room(int mapDataNum) {
 					pathData[y].push_back(MAP_DATA_NO2_PATH[y][x]);
 					floorData[y].push_back(MAP_DATA_NO2_LAYER_FIRST[y][x]);
 					ceilData[y].push_back(MAP_DATA_NO2_LAYER_SECOND[y][x]);
-					monsterData[y].push_back(MAP_DATA_NO1_MONSTER[y][x]);
+					monsterData[y].push_back(MAP_DATA_NO2_MONSTER[y][x]);
 				}
 			}
 
@@ -75,7 +75,26 @@ Room::Room(int mapDataNum) {
 					pathData[y].push_back(MAP_DATA_NO3_PATH[y][x]);
 					floorData[y].push_back(MAP_DATA_NO3_LAYER_FIRST[y][x]);
 					ceilData[y].push_back(MAP_DATA_NO3_LAYER_SECOND[y][x]);
-					monsterData[y].push_back(MAP_DATA_NO1_MONSTER[y][x]);
+					monsterData[y].push_back(MAP_DATA_NO3_MONSTER[y][x]);
+				}
+			}
+
+			break;
+		}
+		case 10: {
+			roomSize = { 22, 22 };
+			drawOffset = { 0, 1 };
+
+			for (int y = 0; y < 22; y++) {
+				pathData.push_back({});
+				floorData.push_back({});
+				ceilData.push_back({});
+				monsterData.push_back({});
+				for (int x = 0; x < 22; x++) {
+					pathData[y].push_back(MAP_DATA_BOSS_PATH[y][x]);
+					floorData[y].push_back(MAP_DATA_BOSS_LAYER_FIRST[y][x]);
+					ceilData[y].push_back(MAP_DATA_BOSS_LAYER_SECOND[y][x]);
+					monsterData[y].push_back(MAP_DATA_BOSS_MONSTER[y][x]);
 				}
 			}
 
@@ -129,7 +148,10 @@ Map::Map(HDC hDC) {
 	tilemapBmp.Load(L"TileMap.bmp");
 
 	rooms.push_back(Room(0));
-	rooms.push_back(1);
+	rooms.push_back(Room(1));
+	rooms.push_back(Room(2));
+	rooms.push_back(Room(3));
+	rooms.push_back(Room(10));
 
 	POINT drawOffset = { 0, 0 };
 	for (int i = 0; i < rooms.size(); i++) {
@@ -151,8 +173,8 @@ Map::Map(HDC hDC) {
 
 	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, 54 * mapSize.x, 54 * mapSize.y);
 	mapFloorMemDC = CreateCompatibleDC(hDC);
-
 	SelectObject(mapFloorMemDC, hBitmap);
+
 	for (int y = 0; y < 18; y++) {
 		for (int x = 0; x < 20; x++) {
 			tilemapBmp.Draw(mapFloorMemDC, (x + 1) * 54, (y + 3) * 54, 54, 54, TILEMAP_OFFSET_INITPLACE_START.x + x * 18, TILEMAP_OFFSET_INITPLACE_START.y + y * 18, 18, 18);
@@ -164,6 +186,17 @@ Map::Map(HDC hDC) {
 				continue;
 			tilemapBmp.Draw(mapFloorMemDC, x * 54, y * 54, 54, 54, floorData[y][x] * 18, 0, 18, 18);
 		}
+	}
+
+	DeleteObject(hBitmap);
+
+	hBitmap = CreateCompatibleBitmap(hDC, 54 * mapSize.x, 54 * mapSize.y);
+	mapDoorMemDC = CreateCompatibleDC(hDC);
+	SelectObject(mapDoorMemDC, hBitmap);
+
+	StretchBlt(mapDoorMemDC, 0, 0, 54 * mapSize.x, 54 * mapSize.y, mapFloorMemDC, 0, 0, 54 * mapSize.x, 54 * mapSize.y, SRCCOPY);
+	for (int y = 0; y < rooms.size() - 1; y++) {
+		tilemapBmp.Draw(mapDoorMemDC, 108, (y * 22 + 20) * 54, 108, 108, 0, 54 * 19, 36, 36);
 	}
 
 	DeleteObject(hBitmap);
@@ -196,7 +229,12 @@ int Map::GetCurrentRoomIndex(POINT playerPosition) {
 }
 
 void Map::DrawFloor(HDC hDC, POINT offset, RECT rt) {
-	StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapFloorMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCCOPY);
+	if (isOnCombat) {
+		StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapDoorMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCCOPY);
+	}
+	else {
+		StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapFloorMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCCOPY);
+	}
 }
 
 void Map::DrawCeil(HDC hDC, POINT offset, RECT rt) {

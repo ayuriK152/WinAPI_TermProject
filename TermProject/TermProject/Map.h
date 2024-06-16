@@ -27,6 +27,7 @@ class Map {
 private:
 	HDC mapFloorMemDC;
 	HDC mapWallMemDC;
+	HDC mapDoorMemDC;
 	vector<vector<int>> pathData;
 	vector<vector<int>> floorData;
 	vector<vector<int>> ceilData;
@@ -38,6 +39,7 @@ public:
 	POINT mapSize;
 	CImage tilemapBmp;
 	bool isTilemapLoaded;
+	bool isOnCombat;
 
 	Map(HDC hDC);
 

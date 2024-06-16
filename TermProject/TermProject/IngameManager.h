@@ -20,7 +20,7 @@ namespace Game {
 	static HBRUSH hBrush, oldBrush;
 	static HPEN hPen, oldPen;
 	static RECT rt;
-	static RECT bulletMountRt;
+	static RECT bulletMountRt, pausedRt;
 	static HBITMAP hBitmap;
 
 	static Player* player;
@@ -31,6 +31,8 @@ namespace Game {
 	static CImage enemyBullet;
 	static Map* map;
 	static bool checkKeyInput[4], checkMovableDirection[4];
+	static bool isPlayerCombat;
+	static bool isGamePaused;
 	static int currentMapIdx;
 
 	static HFONT hFont, oldFont;
