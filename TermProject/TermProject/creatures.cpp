@@ -640,8 +640,10 @@ bool Player::IsCurrentGunOnReload() {
 	return guns[currentGunIdx]->IsGunOnReLoad();
 }
 
-Enemy::Enemy(EnemyType enemyType) {
+Enemy::Enemy(EnemyType enemyType, int mapIndex) {
 	this->enemyType = enemyType;
+	this->mapIndex = mapIndex;
+	isActivate = false;
 	gunDelay = 0;
 	switch (enemyType) {
 		case BulletJunior: {
@@ -689,8 +691,10 @@ Enemy::Enemy(EnemyType enemyType) {
 	animationStatus = IdleDown;
 }
 
-Enemy::Enemy(EnemyType enemyType, int x, int y) {
+Enemy::Enemy(EnemyType enemyType, int x, int y, int mapIndex) {
 	this->enemyType = enemyType;
+	this->mapIndex = mapIndex;
+	isActivate = false;
 	gunDelay = 0;
 	switch (enemyType) {
 		case BulletJunior: {
@@ -861,7 +865,7 @@ Bullet* Enemy::FireGun() {
 }
 
 void Enemy::AI() {
-	if (animationStatus == Death)
+	if (animationStatus == Death || !isActivate)
 		return;
 
 	angle = atan2(position.x - destPosition.x, position.y - destPosition.y);

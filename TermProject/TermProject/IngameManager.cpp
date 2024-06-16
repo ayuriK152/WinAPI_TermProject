@@ -18,7 +18,11 @@ void CALLBACK Game::PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWOR
 	centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 	player->SetCameraRelativeOffset();
 	map->CheckMovableDirection(checkMovableDirection, player->GetPosition(), player->GetHitboxRect());
+	currentMapIdx = map->GetCurrentRoomIndex(player->GetPosition());
 	for (int i = 0; i < enemys.size(); i++) {
+		if (!enemys[i]->isActivate && enemys[i]->mapIndex == currentMapIdx - 1) {
+			enemys[i]->isActivate = true;
+		}
 		map->CheckMovableDirection(enemys[i]->checkMovableDirection, enemys[i]->GetPosition(), enemys[i]->GetHitboxRect());
 	}
 
@@ -161,7 +165,7 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 				for (int x = 0; x < map->mapSize.x; x++) {
 					switch (map->MonsterSpawnTileCheck({ x, y })) {
 						case 1: {
-							enemys.push_back(new Enemy(BulletJunior, 54 * x - 540, 54 * y - 540));
+							enemys.push_back(new Enemy(BulletJunior, 54 * x - 540, 54 * y - 540, y / 22));
 							break;
 						}
 					}

@@ -140,5 +140,4 @@ void Gun::Rotate(POINT offset) {
 	// Lower-Left
 	renderPoints[1].x = (LONG)((originPos.x * cos + originPos.y * sin) + offset.x);
 	renderPoints[1].y = (LONG)((-originPos.y * cos + originPos.x * sin) + offset.y);
-
 }

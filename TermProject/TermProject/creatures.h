@@ -152,10 +152,12 @@ private:
 
 public:
 	bool checkMovableDirection[4];
+	bool isActivate;
+	int mapIndex;
 
-	Enemy(EnemyType enemyType);
+	Enemy(EnemyType enemyType, int mapIndex);
 
-	Enemy(EnemyType enemyType, int x, int y);
+	Enemy(EnemyType enemyType, int x, int y, int mapIndex);
 
 	~Enemy();
 

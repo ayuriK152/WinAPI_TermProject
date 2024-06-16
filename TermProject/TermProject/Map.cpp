@@ -191,6 +191,10 @@ Map::~Map() {
 	DeleteObject(mapWallMemDC);
 }
 
+int Map::GetCurrentRoomIndex(POINT playerPosition) {
+	return pathData[(playerPosition.y + 594) / 54][(playerPosition.x + 594) / 54];
+}
+
 void Map::DrawFloor(HDC hDC, POINT offset, RECT rt) {
 	StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapFloorMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCCOPY);
 }

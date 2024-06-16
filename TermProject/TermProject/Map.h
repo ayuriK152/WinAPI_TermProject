@@ -27,7 +27,7 @@ class Map {
 private:
 	HDC mapFloorMemDC;
 	HDC mapWallMemDC;
-	vector<vector<bool>> pathData;
+	vector<vector<int>> pathData;
 	vector<vector<int>> floorData;
 	vector<vector<int>> ceilData;
 	vector<vector<int>> monsterData;
@@ -44,6 +44,8 @@ public:
 	~Map();
 
 	void CheckMovableDirection(bool flags[], POINT playerPosition, RECT playerHitbox);
+
+	int GetCurrentRoomIndex(POINT playerPosition);
 	
 	bool IsCollideWall(RECT hitbox);
 
