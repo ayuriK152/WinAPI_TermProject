@@ -15,6 +15,7 @@ class Creature {
 protected:
 	int originHP, currentHP;
 	int animationIndex;
+	int gunDelay;
 	double angle;
 	bool isMoveDiagonal;
 	bool isGunOnDelay;
@@ -69,7 +70,6 @@ private:
 	POINT cameraRelativePosition;
 	bool isRoll;
 	int currentGunIdx;
-	int gunDelay;
 
 public:
 	Player();
@@ -190,4 +190,6 @@ public:
 	void AI();
 
 	void SetDestination(POINT playerPosition);
+
+	bool IsCanFire();
 };

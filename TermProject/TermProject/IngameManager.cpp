@@ -42,10 +42,13 @@ void Game::PlayAnimation(HDC hDC) {
 
 	for (int i = 0; i < enemys.size(); i++) {
 		enemys[i]->PlayAnimation(mDC);
+		if (enemys[i]->IsCanFire()) {
+			bullets.push_back(enemys[i]->FireGun());
+		}
 		if (enemys[i]->GetMoveStatus() == Death)
 			continue;
 		for (int j = 0; j < bullets.size(); j++) {
-			if (IsCollide(enemys[i]->GetHitboxRect(), bullets[j]->GetHitboxRect())) {
+			if (IsCollide(enemys[i]->GetHitboxRect(), bullets[j]->GetHitboxRect()) && !bullets[j]->IsHostile()) {
 				enemys[i]->GetDamge(1);
 				delete bullets[j];
 				bullets.erase(bullets.begin() + j);
@@ -67,7 +70,12 @@ void Game::PlayAnimation(HDC hDC) {
 			i -= 1;
 		}
 		else {
-			bullet.Draw(mDC, bullets[i]->GetPosition().x - 22 + centerOffset.x, bullets[i]->GetPosition().y - 22 + centerOffset.y, 45, 45);
+			if (bullets[i]->IsHostile()) {
+				enemyBullet.Draw(mDC, bullets[i]->GetPosition().x - 22 + centerOffset.x, bullets[i]->GetPosition().y - 22 + centerOffset.y, 45, 45);
+			}
+			else {
+				bullet.Draw(mDC, bullets[i]->GetPosition().x - 22 + centerOffset.x, bullets[i]->GetPosition().y - 22 + centerOffset.y, 45, 45);
+			}
 		}
 	}
 
@@ -119,6 +127,8 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 
 			bullet.Load(L"bullet.bmp");
 			bullet.SetTransparentColor(RGB(0, 255, 0));
+			enemyBullet.Load(L"EnemyBullet.bmp");
+			enemyBullet.SetTransparentColor(RGB(0, 255, 0));
 
 			player->SetCameraRelativePosition(mousePoint, rt);
 			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };

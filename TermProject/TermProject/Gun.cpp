@@ -46,9 +46,12 @@ void Gun::Draw(HDC hDC, POINT offset) {
 	DeleteDC(mDC);
 }
 
-Bullet* Gun::Shoot(POINT shooterPosition, int decreaseMount) {
+Bullet* Gun::Shoot(POINT shooterPosition, int decreaseMount, bool isHostile) {
 	currentBulletMount -= decreaseMount;
-	return new Bullet({ shootPos.x + shooterPosition.x, shootPos.y + shooterPosition.y }, { 45, 45 }, 25, angle, false);
+	if (isHostile) {
+		return new Bullet({ shootPos.x + shooterPosition.x, shootPos.y + shooterPosition.y }, { 45, 45 }, 15, angle, isHostile);
+	}
+	return new Bullet({ shootPos.x + shooterPosition.x, shootPos.y + shooterPosition.y }, { 45, 45 }, 25, angle, isHostile);
 }
 
 int Gun::GetCurrentBulletMount() {

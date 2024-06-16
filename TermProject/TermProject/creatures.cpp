@@ -405,7 +405,7 @@ RECT Player::GetHitboxRect() {
 }
 
 Bullet* Player::FireGun() {
-	return guns[currentGunIdx]->Shoot({ (gunPosition.x - cameraRelativePosition.x) + position.x, (gunPosition.y - cameraRelativePosition.y) + position.y }, 1);
+	return guns[currentGunIdx]->Shoot({ (gunPosition.x - cameraRelativePosition.x) + position.x, (gunPosition.y - cameraRelativePosition.y) + position.y }, 1, false);
 }
 
 void Player::AnimationRefresh(bool checkKeyInput[], POINT mousePoint) {
@@ -633,6 +633,8 @@ bool Player::IsCurrentGunOnReload() {
 }
 
 Enemy::Enemy(EnemyType enemyType) {
+	this->enemyType = enemyType;
+	gunDelay = 0;
 	switch (enemyType) {
 		case BulletJunior: {
 			originHP = ENEMY_HP_BULLETJUNIOR;
@@ -681,6 +683,7 @@ Enemy::Enemy(EnemyType enemyType) {
 
 Enemy::Enemy(EnemyType enemyType, int x, int y) {
 	this->enemyType = enemyType;
+	gunDelay = 0;
 	switch (enemyType) {
 		case BulletJunior: {
 			originHP = ENEMY_HP_BULLETJUNIOR;
@@ -846,13 +849,14 @@ RECT Enemy::GetHitboxRect() {
 }
 
 Bullet* Enemy::FireGun() {
-	return guns[0]->Shoot(position, 0);
+	return guns[0]->Shoot(position, 0, true);
 }
 
 void Enemy::AI() {
 	angle = atan2(position.x - destPosition.x, position.y - destPosition.y);
 	gunPosition = { -(long)(sin(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.x + position.x, -(long)(cos(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.y + position.y };
 	guns[0]->SetAngle(angle);
+	gunDelay += 1;
 
 	distanceToPlayer = DistanceByPoint(destPosition, position);
 
@@ -916,4 +920,12 @@ void Enemy::AI() {
 
 void Enemy::SetDestination(POINT playerPosition) {
 	destPosition = playerPosition;
+}
+
+bool Enemy::IsCanFire() {
+	if (gunDelay >= ENEMY_GUN_DELAY_TIME) {
+		gunDelay = 0;
+		return true;
+	}
+	return false;
 }

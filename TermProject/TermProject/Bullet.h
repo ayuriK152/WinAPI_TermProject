@@ -20,4 +20,6 @@ public:
 	POINT GetPosition();
 
 	RECT GetHitboxRect();
+
+	bool IsHostile();
 };

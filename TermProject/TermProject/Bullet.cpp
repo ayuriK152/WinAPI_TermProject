@@ -31,3 +31,7 @@ POINT Bullet::GetPosition() {
 RECT Bullet::GetHitboxRect() {
 	return hitboxRect;
 }
+
+bool Bullet::IsHostile() {
+	return isHostile;
+}

@@ -27,6 +27,7 @@ namespace Game {
 	static vector<Bullet*> bullets;
 	static POINT mousePoint, centerOffset;
 	static CImage cursor, heart, bullet;
+	static CImage enemyBullet;
 	static Map* map;
 	static bool checkKeyInput[4], checkMovableDirection[4];
 	static int currentMapIdx;

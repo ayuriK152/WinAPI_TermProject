@@ -27,7 +27,7 @@ public:
 
 	void Draw(HDC hDC, POINT offset);
 
-	Bullet* Shoot(POINT shooterPosition, int decreaseMount);
+	Bullet* Shoot(POINT shooterPosition, int decreaseMount, bool isHostile);
 
 	int GetCurrentBulletMount();
 
