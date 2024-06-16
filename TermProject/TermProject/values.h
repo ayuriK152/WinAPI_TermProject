@@ -9,7 +9,7 @@ static const int ANIMATION_REFRESH_DURATION				= 100;
 static const int ANIMATION_REFRESH_DURATION_ENEMY		= 150;
 static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
 static const int POSITION_REFRESH_DURATION				= 10;
-static const int AI_REFRESH_REFRESH_DURATION			= 10;
+static const int AI_REFRESH_REFRESH_DURATION			= 50;
 
 static const int CREATURE_GUN_HOLDING_DISTANCE	= 40;
 static const int ENEMY_STOP_DISTANCE			= 300;

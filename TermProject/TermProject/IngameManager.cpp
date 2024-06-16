@@ -139,14 +139,8 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			heart.Load(L"heart.bmp");
 			heart.SetTransparentColor(RGB(0, 255, 0));
 
-			enemys.push_back(new Enemy(BulletJunior, 200, 200));
-
 			SetTimer(hWnd, POSITION_REFRESH_ID, POSITION_REFRESH_DURATION, PositionRefresh);
 			SetTimer(hWnd, ANIMATION_REFRESH_ID_PLAYER, ANIMATION_REFRESH_DURATION, PlayerAnimationRefresh);
-			for (int i = 0; i < enemys.size(); i++) {
-				SetTimer(hWnd, ANIMATION_REFRESH_ID_ENEMY + i, ANIMATION_REFRESH_DURATION_ENEMY, EnemyAnimationRefresh);
-				SetTimer(hWnd, AI_REFRESH_ID_ENEMY + i, AI_REFRESH_REFRESH_DURATION, EnemyAIRefresh);
-			}
 
 			if (cursor.IsNull()) {
 				cursor.Load(L"Cursor.bmp");
@@ -163,6 +157,20 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 
 			map = new Map(hDC);
+			for (int y = 0; y < map->mapSize.y; y++) {
+				for (int x = 0; x < map->mapSize.x; x++) {
+					switch (map->MonsterSpawnTileCheck({ x, y })) {
+						case 1: {
+							enemys.push_back(new Enemy(BulletJunior, 54 * x - 540, 54 * y - 540));
+							break;
+						}
+					}
+				}
+			}
+			for (int i = 0; i < enemys.size(); i++) {
+				SetTimer(hWnd, ANIMATION_REFRESH_ID_ENEMY + i, ANIMATION_REFRESH_DURATION_ENEMY, EnemyAnimationRefresh);
+				SetTimer(hWnd, AI_REFRESH_ID_ENEMY + i, AI_REFRESH_REFRESH_DURATION, EnemyAIRefresh);
+			}
 			currentMapIdx = 0;
 			bulletMountRt = { rt.right - 200, rt.bottom - 60, rt.right, rt.bottom };
 			ReleaseDC(hWnd, hDC);

@@ -155,73 +155,73 @@ void Player::SetMoveStatus(AnimationStatus status) { animationStatus = status; }
 void Player::PlayAnimation(HDC hDC) {
 	switch (animationStatus) {
 		case IdleUp: {
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UP.y, 25, 25);
 			break;
 		}
 
 		case IdleDown: {
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_DOWN.y, 25, 25);
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			break;
 		}
 
 		case IdleLeft: {
 			leftAnimationBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 25 * animationIndex, 0, 25, 25);
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			break;
 		}
 
 		case IdleRight: {
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_RIGHT.y, 25, 25);
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			break;
 		}
 
 		case IdleUpLeft: {
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			leftAnimationBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 25 * animationIndex, 25, 25, 25);
 			break;
 		}
 
 		case IdleUpRight: {
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_IDLE_UPRIGHT.y, 25, 25);
 			break;
 		}
 
 		case MoveUp: {
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UP.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UP.y, 25, 25);
 			break;
 		}
 
 		case MoveDown: {
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_DOWN.y, 25, 25);
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			break;
 		}
 
 		case MoveLeft: {
 			leftAnimationBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 25 * animationIndex, 50, 25, 25);
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			break;
 		}
 
 		case MoveRight: {
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_RIGHT.y, 25, 25);
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			break;
 		}
 
 		case MoveUpLeft: {
-			guns[currentGunIdx]->Draw(hDC, gunPosition); leftAnimationBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 25 * animationIndex, 75, 25, 25);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true); leftAnimationBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 25 * animationIndex, 75, 25, 25);
 			leftAnimationBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, 25 * animationIndex, 75, 25, 25);
 			break;
 		}
 
 		case MoveUpRight: {
-			guns[currentGunIdx]->Draw(hDC, gunPosition);
+			guns[currentGunIdx]->Draw(hDC, gunPosition, true);
 			playerSpriteBmp.Draw(hDC, cameraRelativePosition.x - PLAYER_CHARACTER_SIZE / 2, cameraRelativePosition.y - PLAYER_CHARACTER_SIZE / 2, PLAYER_CHARACTER_SIZE, PLAYER_CHARACTER_SIZE, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.x + 25 * animationIndex, ANIMATION_OFFSET_PLAYER_MOVE_UPRIGHT.y, 25, 25);
 			break;
 		}
@@ -788,26 +788,26 @@ void Enemy::PlayAnimation(HDC hDC) {
 		}
 
 		case IdleUp: {
-			guns[0]->Draw(hDC, gunPosition);
+			guns[0]->Draw(hDC, gunPosition, false);
 			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex + 100, 0, 25, 25);
 			break;
 		}
 
 		case IdleDown: {
 			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[0]->Draw(hDC, gunPosition, false);
 			break;
 		}
 
 		case MoveRight: {
 			moveRightBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 0, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[0]->Draw(hDC, gunPosition, false);
 			break;
 		}
 
 		case MoveLeft: {
 			bulletJuniorSpriteBmp.Draw(hDC, (cameraRelativeOffset.x + position.x) - ENEMY_BULLETJUNIOR_SIZE / 2, (cameraRelativeOffset.y + position.y) - ENEMY_BULLETJUNIOR_SIZE / 2, ENEMY_BULLETJUNIOR_SIZE, ENEMY_BULLETJUNIOR_SIZE, 25 * animationIndex, 25, 25, 25);
-			guns[0]->Draw(hDC, gunPosition);
+			guns[0]->Draw(hDC, gunPosition, false);
 			break;
 		}
 	}
@@ -865,7 +865,8 @@ void Enemy::AI() {
 		return;
 
 	angle = atan2(position.x - destPosition.x, position.y - destPosition.y);
-	gunPosition = { -(long)(sin(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.x + position.x, -(long)(cos(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.y + position.y };
+	//gunPosition = { -(long)(sin(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.x + position.x, -(long)(cos(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.y + position.y };
+	gunPosition = { cameraRelativeOffset.x + position.x, cameraRelativeOffset.y + position.y };
 	guns[0]->SetAngle(angle);
 	gunDelay += 1;
 

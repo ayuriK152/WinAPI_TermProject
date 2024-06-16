@@ -13,6 +13,7 @@ public:
 	vector<vector<int>> pathData;
 	vector<vector<int>> floorData;
 	vector<vector<int>> ceilData;
+	vector<vector<int>> monsterData;
 	int roomIndex;
 	POINT roomSize;
 	POINT drawOffset;
@@ -26,14 +27,15 @@ class Map {
 private:
 	HDC mapFloorMemDC;
 	HDC mapWallMemDC;
-	POINT mapSize;
 	vector<vector<bool>> pathData;
 	vector<vector<int>> floorData;
 	vector<vector<int>> ceilData;
+	vector<vector<int>> monsterData;
 	
 
 public:
 	vector<Room> rooms;
+	POINT mapSize;
 	CImage tilemapBmp;
 	bool isTilemapLoaded;
 
@@ -48,4 +50,6 @@ public:
 	void DrawFloor(HDC hDC, POINT offset, RECT clientRt);
 
 	void DrawCeil(HDC hDC, POINT offset, RECT rt);
+
+	int MonsterSpawnTileCheck(POINT position);
 };

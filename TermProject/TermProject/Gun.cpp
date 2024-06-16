@@ -12,12 +12,19 @@ Gun::Gun(GunType gunType, int originBulletMount) {
 		case AutoHandgun: {
 			sourceBitmap.Load(L"AutoHandgun.bmp");
 			maskBitmap.Load(L"AutoHandgunMask.bmp");
+			reversedBitmap.Create(16, 16, 32, 0);
+			for (int y = 0; y < 16; y++) {
+				for (int x = 0; x < 16; x++) {
+					reversedBitmap.SetPixel(x, y, sourceBitmap.GetPixel(15 - x, y));
+				}
+			}
 			shootPosOffset = { 6, -3 };
 			break;
 		}
 	}
 
 	sourceBitmap.SetTransparentColor(RGB(0, 255, 0));
+	reversedBitmap.SetTransparentColor(RGB(0, 255, 0));
 }
 
 Gun::~Gun() {
@@ -28,22 +35,36 @@ void Gun::SetAngle(double angle) {
 	this->angle = angle;
 }
 
-void Gun::Draw(HDC hDC, POINT offset) {
-	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, 1920, 1080);
-	HDC mDC = CreateCompatibleDC(hDC);
-	SelectObject(mDC, hBitmap);
-	Rotate(offset);
+HBITMAP hBitmap;
+HDC mDC;
+HBRUSH hBrush;
 
-	HBRUSH hBrush = CreateSolidBrush(RGB(0, 255, 0));
-	SelectObject(mDC, hBrush);
+void Gun::Draw(HDC hDC, POINT offset, bool isRotate) {
+	if (isRotate) {
+		hBitmap = CreateCompatibleBitmap(hDC, 1920, 1080);
+		mDC = CreateCompatibleDC(hDC);
+		SelectObject(mDC, hBitmap);
+		Rotate(offset);
 
-	Rectangle(mDC, 0, 0, 1920, 1080);
-	sourceBitmap.PlgBlt(mDC, renderPoints, 0, 0, sourceBitmap.GetWidth(), sourceBitmap.GetHeight());
-	TransparentBlt(hDC, 0, 0, 1920, 1080, mDC, 0, 0, 1920, 1080, RGB(0, 255, 0));
+		hBrush = CreateSolidBrush(RGB(0, 255, 0));
+		SelectObject(mDC, hBrush);
 
-	DeleteObject(hBrush);
-	DeleteObject(hBitmap);
-	DeleteDC(mDC);
+		Rectangle(mDC, 0, 0, 1920, 1080);
+		sourceBitmap.PlgBlt(mDC, renderPoints, 0, 0, sourceBitmap.GetWidth(), sourceBitmap.GetHeight());
+		TransparentBlt(hDC, 0, 0, 1920, 1080, mDC, 0, 0, 1920, 1080, RGB(0, 255, 0));
+
+		DeleteObject(hBrush);
+		DeleteObject(hBitmap);
+		DeleteDC(mDC);
+	}
+	else {
+		if (sinf(-angle) < 0) {
+			reversedBitmap.Draw(hDC, offset.x - 56, offset.y - 24, 48, 48);
+		}
+		else {
+			sourceBitmap.Draw(hDC, offset.x + 8, offset.y - 24, 48, 48);
+		}
+	}
 }
 
 Bullet* Gun::Shoot(POINT shooterPosition, int decreaseMount, bool isHostile) {

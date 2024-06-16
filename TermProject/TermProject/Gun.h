@@ -7,7 +7,7 @@
 class Gun {
 private:
 	GunType gunType;
-	CImage sourceBitmap;
+	CImage sourceBitmap, reversedBitmap;
 	CImage maskBitmap;
 	POINT shootPosOffset, shootPos;
 	POINT renderPoints[3];
@@ -25,7 +25,7 @@ public:
 
 	void SetAngle(double angle);
 
-	void Draw(HDC hDC, POINT offset);
+	void Draw(HDC hDC, POINT offset, bool isRotate);
 
 	Bullet* Shoot(POINT shooterPosition, int decreaseMount, bool isHostile);
 

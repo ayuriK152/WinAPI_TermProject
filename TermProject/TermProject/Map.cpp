@@ -13,10 +13,12 @@ Room::Room(int mapDataNum) {
 				pathData.push_back({});
 				floorData.push_back({});
 				ceilData.push_back({});
+				monsterData.push_back({});
 				for (int x = 0; x < 22; x++) {
 					pathData[y].push_back(MAP_DATA_INIT_PATH[y][x]);
 					floorData[y].push_back(MAP_DATA_INIT_LAYER_FIRST[y][x]);
 					ceilData[y].push_back(MAP_DATA_INIT_LAYER_SECOND[y][x]);
+					monsterData[y].push_back(0);
 				}
 			}
 
@@ -30,10 +32,12 @@ Room::Room(int mapDataNum) {
 				pathData.push_back({});
 				floorData.push_back({});
 				ceilData.push_back({});
+				monsterData.push_back({});
 				for (int x = 0; x < 22; x++) {
 					pathData[y].push_back(MAP_DATA_NO1_PATH[y][x]);
 					floorData[y].push_back(MAP_DATA_NO1_LAYER_FIRST[y][x]);
 					ceilData[y].push_back(MAP_DATA_NO1_LAYER_SECOND[y][x]);
+					monsterData[y].push_back(MAP_DATA_NO1_MONSTER[y][x]);
 				}
 			}
 
@@ -47,10 +51,12 @@ Room::Room(int mapDataNum) {
 				pathData.push_back({});
 				floorData.push_back({});
 				ceilData.push_back({});
+				monsterData.push_back({});
 				for (int x = 0; x < 22; x++) {
 					pathData[y].push_back(MAP_DATA_NO2_PATH[y][x]);
 					floorData[y].push_back(MAP_DATA_NO2_LAYER_FIRST[y][x]);
 					ceilData[y].push_back(MAP_DATA_NO2_LAYER_SECOND[y][x]);
+					monsterData[y].push_back(MAP_DATA_NO1_MONSTER[y][x]);
 				}
 			}
 
@@ -64,10 +70,12 @@ Room::Room(int mapDataNum) {
 				pathData.push_back({});
 				floorData.push_back({});
 				ceilData.push_back({});
+				monsterData.push_back({});
 				for (int x = 0; x < 22; x++) {
 					pathData[y].push_back(MAP_DATA_NO3_PATH[y][x]);
 					floorData[y].push_back(MAP_DATA_NO3_LAYER_FIRST[y][x]);
 					ceilData[y].push_back(MAP_DATA_NO3_LAYER_SECOND[y][x]);
+					monsterData[y].push_back(MAP_DATA_NO1_MONSTER[y][x]);
 				}
 			}
 
@@ -121,7 +129,7 @@ Map::Map(HDC hDC) {
 	tilemapBmp.Load(L"TileMap.bmp");
 
 	rooms.push_back(Room(0));
-	rooms.push_back(rand() % 3 + 1);
+	rooms.push_back(1);
 
 	POINT drawOffset = { 0, 0 };
 	for (int i = 0; i < rooms.size(); i++) {
@@ -131,10 +139,12 @@ Map::Map(HDC hDC) {
 			pathData.push_back({});
 			floorData.push_back({});
 			ceilData.push_back({});
+			monsterData.push_back({});
 			for (int x = 0; x < rooms[i].roomSize.x; x++) {
 				pathData[y + drawOffset.y * 22].push_back(rooms[i].pathData[y][x]);
 				floorData[y + drawOffset.y * 22].push_back(rooms[i].floorData[y][x]);
 				ceilData[y + drawOffset.y * 22].push_back(rooms[i].ceilData[y][x]);
+				monsterData[y + drawOffset.y * 22].push_back(rooms[i].monsterData[y][x]);
 			}
 		}
 	}
@@ -187,4 +197,8 @@ void Map::DrawFloor(HDC hDC, POINT offset, RECT rt) {
 
 void Map::DrawCeil(HDC hDC, POINT offset, RECT rt) {
 	StretchBlt(hDC, 0, 0, rt.right, rt.bottom, mapWallMemDC, -(offset.x - 594), -(offset.y - 594), rt.right, rt.bottom, SRCPAINT);
+}
+
+int Map::MonsterSpawnTileCheck(POINT position) {
+	return monsterData[position.y][position.x];
 }
