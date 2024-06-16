@@ -9,7 +9,7 @@ static const int ANIMATION_REFRESH_DURATION				= 100;
 static const int ANIMATION_REFRESH_DURATION_ENEMY		= 150;
 static const int ANIMATION_REFRESH_DURATION_PLAYER_ROLL = 50;
 static const int POSITION_REFRESH_DURATION				= 10;
-static const int AI_REFRESH_REFRESH_DURATION			= 250;
+static const int AI_REFRESH_REFRESH_DURATION			= 10;
 
 static const int CREATURE_GUN_HOLDING_DISTANCE	= 40;
 static const int ENEMY_STOP_DISTANCE			= 300;
@@ -20,6 +20,7 @@ static const int ENEMY_BULLETJUNIOR_SIZE	= 75;
 static const int PLAYER_HEART_SIZE			= 17;
 
 static const int PLAYER_GUN_RELOAD_TIME		= 62;
+static const int PLAYER_GUN_DELAY_TIME		= 30;
 
 static const int PLAYER_MOVE_SPEED					= 8;
 static const int PLAYER_MOVE_SPEED_DIAGONAL			= 6;

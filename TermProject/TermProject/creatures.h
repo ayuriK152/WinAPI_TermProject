@@ -7,8 +7,9 @@
 
 using namespace std;
 
-static CImage bulletJuniorBmp;
+static CImage bulletJuniorSpriteBmp;
 static POINT cameraRelativeOffset;
+static CImage playerSpriteBmp;
 
 class Creature {
 protected:
@@ -16,9 +17,9 @@ protected:
 	int animationIndex;
 	double angle;
 	bool isMoveDiagonal;
+	bool isGunOnDelay;
 	POINT position;
 	RECT hitboxRect;
-	CImage spriteBitmap;
 	AnimationStatus animationStatus;
 	vector<Gun*> guns;
 	POINT gunPosition;
@@ -44,8 +45,6 @@ public:
 
 	virtual void SetMoveStatus(AnimationStatus status) = 0;
 
-	virtual void SetSpriteBitmap(LPCTSTR fileName) = 0;
-
 	virtual void PlayAnimation(HDC hDC) = 0;
 
 	virtual int GetAnimationIndex() = 0;
@@ -66,9 +65,11 @@ public:
 class Player : Creature {
 private:
 	CImage reloadBar;
+	CImage leftAnimationBmp;
 	POINT cameraRelativePosition;
 	bool isRoll;
 	int currentGunIdx;
+	int gunDelay;
 
 public:
 	Player();
@@ -96,8 +97,6 @@ public:
 	virtual AnimationStatus GetMoveStatus();
 
 	virtual void SetMoveStatus(AnimationStatus status);
-
-	virtual void SetSpriteBitmap(LPCTSTR fileName);
 
 	virtual void PlayAnimation(HDC hDC);
 
@@ -141,6 +140,7 @@ public:
 class Enemy : Creature {
 private:
 	EnemyType enemyType;
+	CImage moveRightBmp;
 	POINT destPosition;
 	int distanceToPlayer;
 
@@ -170,8 +170,6 @@ public:
 	virtual AnimationStatus GetMoveStatus();
 
 	virtual void SetMoveStatus(AnimationStatus status);
-
-	virtual void SetSpriteBitmap(LPCTSTR fileName);
 
 	virtual void PlayAnimation(HDC hDC);
 

@@ -99,7 +99,6 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			GetClientRect(hWnd, &rt);
 
 			player = new Player();
-			player->SetSpriteBitmap(L"The Pilot.bmp");
 			heart.Load(L"heart.bmp");
 			heart.SetTransparentColor(RGB(0, 255, 0));
 
