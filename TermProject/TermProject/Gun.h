@@ -31,6 +31,10 @@ public:
 
 	int GetCurrentBulletMount();
 
+	int GetOriginBulletMount();
+
+	GunType GetGunType();
+
 	int GetCurrentReloadStatus();
 
 	void IncreaseReloadCount();

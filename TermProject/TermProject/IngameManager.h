@@ -20,6 +20,7 @@ namespace Game {
 	static HBRUSH hBrush, oldBrush;
 	static HPEN hPen, oldPen;
 	static RECT rt;
+	static RECT bulletMountRt;
 	static HBITMAP hBitmap;
 
 	static Player* player;
@@ -31,6 +32,8 @@ namespace Game {
 	static Map* map;
 	static bool checkKeyInput[4], checkMovableDirection[4];
 	static int currentMapIdx;
+
+	static HFONT hFont, oldFont;
 
 	void PlayAnimation(HDC hDC);
 

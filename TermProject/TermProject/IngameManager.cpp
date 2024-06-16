@@ -37,6 +37,8 @@ void Game::PlayAnimation(HDC hDC) {
 	hBitmap = CreateCompatibleBitmap(hDC, rt.right, rt.bottom);
 	mDC = CreateCompatibleDC(hDC);
 	SelectObject(mDC, hBitmap);
+	hFont = CreateFont(30, 0, 0, 0, 0, 0, 0, 0, HANGEUL_CHARSET, 0, 0, 0, VARIABLE_PITCH | FF_ROMAN, TEXT("PF스타더스트 Bold"));
+	oldFont = (HFONT)SelectObject(mDC, hFont);
 
 	map->DrawFloor(mDC, centerOffset, rt);
 
@@ -50,6 +52,13 @@ void Game::PlayAnimation(HDC hDC) {
 		for (int j = 0; j < bullets.size(); j++) {
 			if (IsCollide(enemys[i]->GetHitboxRect(), bullets[j]->GetHitboxRect()) && !bullets[j]->IsHostile()) {
 				enemys[i]->GetDamge(1);
+				delete bullets[j];
+				bullets.erase(bullets.begin() + j);
+				j--;
+				break;
+			}
+			if (IsCollide(player->GetHitboxRect(), bullets[j]->GetHitboxRect()) && bullets[j]->IsHostile() && !player->IsRolling()) {
+				player->GetDamge(1);
 				delete bullets[j];
 				bullets.erase(bullets.begin() + j);
 				j--;
@@ -81,6 +90,21 @@ void Game::PlayAnimation(HDC hDC) {
 
 	map->DrawCeil(mDC, centerOffset, rt);
 
+	HPEN hPen = (HPEN)SelectObject(mDC, CreatePen(PS_SOLID, 0, RGB(0, 0, 0)));
+	HBRUSH hBrush = (HBRUSH)SelectObject(mDC, CreateSolidBrush(RGB(0, 0, 0)));
+	Rectangle(mDC, bulletMountRt.left, bulletMountRt.top, bulletMountRt.right, bulletMountRt.bottom);
+	SetBkColor(mDC, RGB(0, 0, 0));
+	SetTextColor(mDC, RGB(255, 255, 255));
+	TCHAR bulletMount[20];
+	switch (player->GetCurrentGunType()) {
+		case AutoHandgun: {
+			DrawText(mDC, L"자동권총", 4, &bulletMountRt, DT_LEFT | DT_TOP | DT_SINGLELINE);
+			break;
+		}
+	}
+	wsprintf(bulletMount, L"%d / %d", player->GetCurrentGunBulletAmount(), player->GetCurrentGunOriginBulletAmount());
+	DrawText(mDC, bulletMount, -1, &bulletMountRt, DT_LEFT | DT_BOTTOM | DT_SINGLELINE);
+
 	cursor.Draw(mDC, mousePoint.x - CURSOR_SIZE / 2, mousePoint.y - CURSOR_SIZE / 2, CURSOR_SIZE, CURSOR_SIZE);
 
 	for (int i = 0; i < player->GetOriginHp() / 2; i++) {
@@ -94,6 +118,8 @@ void Game::PlayAnimation(HDC hDC) {
 
 	BitBlt(hDC, 0, 0, rt.right, rt.bottom, mDC, 0, 0, SRCCOPY);
 
+	SelectObject(hDC, oldFont);
+	DeleteObject(hFont);
 	DeleteObject(hBitmap);
 	DeleteDC(mDC);
 }
@@ -135,6 +161,7 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 
 			map = new Map(hDC);
 			currentMapIdx = 0;
+			bulletMountRt = { rt.right - 200, rt.bottom - 60, rt.right, rt.bottom };
 			ReleaseDC(hWnd, hDC);
 			break;
 		}
@@ -144,7 +171,6 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 			GetClientRect(hWnd, &rt);
 
 			PlayAnimation(hDC);
-
 			EndPaint(hWnd, &ps);
 			break;
 		}
@@ -188,7 +214,7 @@ void Game::Play(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, GameScene* g
 		}
 
 		case WM_LBUTTONDOWN: {
-			if (player->IsCurrentGunOnReload()) {
+			if (player->IsCurrentGunOnReload() || player->IsRolling()) {
 				break;
 			}
 			if (player->GetCurrentGunBulletAmount() == 0) {

@@ -620,6 +620,14 @@ int Player::GetCurrentGunBulletAmount() {
 	return guns[currentGunIdx]->GetCurrentBulletMount();
 }
 
+int Player::GetCurrentGunOriginBulletAmount() {
+	return guns[currentGunIdx]->GetOriginBulletMount();
+}
+
+GunType Player::GetCurrentGunType() {
+	return guns[currentGunIdx]->GetGunType();
+}
+
 void Player::ReloadCurrentGun() {
 	return guns[currentGunIdx]->Reload();
 }
@@ -853,6 +861,9 @@ Bullet* Enemy::FireGun() {
 }
 
 void Enemy::AI() {
+	if (animationStatus == Death)
+		return;
+
 	angle = atan2(position.x - destPosition.x, position.y - destPosition.y);
 	gunPosition = { -(long)(sin(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.x + position.x, -(long)(cos(angle) * CREATURE_GUN_HOLDING_DISTANCE) + cameraRelativeOffset.y + position.y };
 	guns[0]->SetAngle(angle);

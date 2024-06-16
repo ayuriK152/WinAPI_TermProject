@@ -58,8 +58,16 @@ int Gun::GetCurrentBulletMount() {
 	return currentBulletMount;
 }
 
+int Gun::GetOriginBulletMount() {
+	return originBulletMount;
+}
+
 int Gun::GetCurrentReloadStatus() {
 	return reloadDelay;
+}
+
+GunType Gun::GetGunType() {
+	return gunType;
 }
 
 void Gun::IncreaseReloadCount() {

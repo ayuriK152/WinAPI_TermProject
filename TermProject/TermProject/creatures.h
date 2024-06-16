@@ -130,6 +130,10 @@ public:
 
 	int GetCurrentGunBulletAmount();
 
+	int GetCurrentGunOriginBulletAmount();
+
+	GunType GetCurrentGunType();
+
 	void ReloadCurrentGun();
 
 	bool IsCurrentGunCanReload();
