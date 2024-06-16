@@ -39,6 +39,40 @@ Room::Room(int mapDataNum) {
 
 			break;
 		}
+		case 2: {
+			roomSize = { 22, 22 };
+			drawOffset = { 0, 1 };
+
+			for (int y = 0; y < 22; y++) {
+				pathData.push_back({});
+				floorData.push_back({});
+				ceilData.push_back({});
+				for (int x = 0; x < 22; x++) {
+					pathData[y].push_back(MAP_DATA_NO2_PATH[y][x]);
+					floorData[y].push_back(MAP_DATA_NO2_LAYER_FIRST[y][x]);
+					ceilData[y].push_back(MAP_DATA_NO2_LAYER_SECOND[y][x]);
+				}
+			}
+
+			break;
+		}
+		case 3: {
+			roomSize = { 22, 22 };
+			drawOffset = { 0, 1 };
+
+			for (int y = 0; y < 22; y++) {
+				pathData.push_back({});
+				floorData.push_back({});
+				ceilData.push_back({});
+				for (int x = 0; x < 22; x++) {
+					pathData[y].push_back(MAP_DATA_NO3_PATH[y][x]);
+					floorData[y].push_back(MAP_DATA_NO3_LAYER_FIRST[y][x]);
+					ceilData[y].push_back(MAP_DATA_NO3_LAYER_SECOND[y][x]);
+				}
+			}
+
+			break;
+		}
 	}
 }
 
@@ -87,7 +121,7 @@ Map::Map(HDC hDC) {
 	tilemapBmp.Load(L"TileMap.bmp");
 
 	rooms.push_back(Room(0));
-	rooms.push_back(Room(1));
+	rooms.push_back(rand() % 3 + 1);
 
 	POINT drawOffset = { 0, 0 };
 	for (int i = 0; i < rooms.size(); i++) {
@@ -105,7 +139,7 @@ Map::Map(HDC hDC) {
 		}
 	}
 
-	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, 54 * 22, 54 * 44);
+	HBITMAP hBitmap = CreateCompatibleBitmap(hDC, 54 * mapSize.x, 54 * mapSize.y);
 	mapFloorMemDC = CreateCompatibleDC(hDC);
 
 	SelectObject(mapFloorMemDC, hBitmap);
@@ -124,7 +158,7 @@ Map::Map(HDC hDC) {
 
 	DeleteObject(hBitmap);
 
-	hBitmap = CreateCompatibleBitmap(hDC, 54 * 22, 54 * 44);
+	hBitmap = CreateCompatibleBitmap(hDC, 54 * mapSize.x, 54 * mapSize.y);
 	mapWallMemDC = CreateCompatibleDC(hDC);
 	SelectObject(mapWallMemDC, hBitmap);
 

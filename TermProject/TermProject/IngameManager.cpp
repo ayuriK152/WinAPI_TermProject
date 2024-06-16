@@ -18,6 +18,9 @@ void CALLBACK Game::PositionRefresh(HWND hWnd, UINT uMsg, UINT_PTR idEvent, DWOR
 	centerOffset = { player->GetCameraRelativePosition().x - player->GetPosition().x, player->GetCameraRelativePosition().y - player->GetPosition().y };
 	player->SetCameraRelativeOffset();
 	map->CheckMovableDirection(checkMovableDirection, player->GetPosition(), player->GetHitboxRect());
+	for (int i = 0; i < enemys.size(); i++) {
+		map->CheckMovableDirection(enemys[i]->checkMovableDirection, enemys[i]->GetPosition(), enemys[i]->GetHitboxRect());
+	}
 
 	player->PositionRefresh(checkKeyInput, checkMovableDirection);
 

@@ -72,6 +72,8 @@ private:
 	int currentGunIdx;
 
 public:
+	bool checkMovableDirection[4];
+
 	Player();
 
 	Player(int x, int y);
@@ -149,6 +151,8 @@ private:
 	int distanceToPlayer;
 
 public:
+	bool checkMovableDirection[4];
+
 	Enemy(EnemyType enemyType);
 
 	Enemy(EnemyType enemyType, int x, int y);

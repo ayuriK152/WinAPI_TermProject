@@ -882,20 +882,26 @@ void Enemy::AI() {
 		// 좌표 하나라도 겹치면 직선이동
 		if (destPosition.x == position.x) {
 			if (destPosition.y < position.y) {
-				Move(0, -ENEMY_MOVE_SPEED_DEFAULT);
+				if (!checkMovableDirection[0])
+					Move(0, -ENEMY_MOVE_SPEED_DEFAULT);
 			}
 			else {
-				Move(0, ENEMY_MOVE_SPEED_DEFAULT);
+				if (!checkMovableDirection[1])
+					Move(0, ENEMY_MOVE_SPEED_DEFAULT);
 			}
 		}
 		else if (destPosition.y == position.y) {
 			if (destPosition.x < position.x) {
-				Move(-ENEMY_MOVE_SPEED_DEFAULT, 0);
-				animationStatus = MoveLeft;
+				if (!checkMovableDirection[2]) {
+					Move(-ENEMY_MOVE_SPEED_DEFAULT, 0);
+					animationStatus = MoveLeft;
+				}
 			}
 			else {
-				Move(ENEMY_MOVE_SPEED_DEFAULT, 0);
-				animationStatus = MoveRight;
+				if (!checkMovableDirection[3]) {
+					Move(ENEMY_MOVE_SPEED_DEFAULT, 0);
+					animationStatus = MoveRight;
+				}
 			}
 		}
 		// 대각선 이동
@@ -905,19 +911,31 @@ void Enemy::AI() {
 			moveMount.y = abs(destPosition.y - position.y) < ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL ? abs(destPosition.y - position.y) : ENEMY_MOVE_SPEED_DEFAULT_DIAGONAL;
 			if (destPosition.x < position.x) {
 				animationStatus = MoveLeft;
+				if (checkMovableDirection[2])
+					moveMount.x = 0;
 				if (destPosition.y < position.y) {
+					if (checkMovableDirection[0])
+						moveMount.y = 0;
 					Move(-moveMount.x, -moveMount.y);
 				}
 				else {
+					if (checkMovableDirection[1])
+						moveMount.y = 0;
 					Move(-moveMount.x, moveMount.y);
 				}
 			}
 			else {
 				animationStatus = MoveRight;
+				if (checkMovableDirection[3])
+					moveMount.x = 0;
 				if (destPosition.y < position.y) {
+					if (checkMovableDirection[0])
+						moveMount.y = 0;
 					Move(moveMount.x, -moveMount.y);
 				}
 				else {
+					if (checkMovableDirection[1])
+						moveMount.y = 0;
 					Move(moveMount.x, moveMount.y);
 				}
 			}
